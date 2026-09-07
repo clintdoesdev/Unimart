@@ -1,0 +1,131 @@
+@import "tailwindcss";
+
+:root {
+  /* Backgrounds & surfaces */
+  --color-bg: #15101d;
+  --color-surface: #1c1528;
+  --color-card: #241c33;
+
+  /* Borders */
+  --color-border-hairline: #2a2137;
+  --color-border-card: #2e2440;
+  --color-border-input: #3a2f52;
+  --color-border-strong: #40335c;
+  --color-control-disabled: #57487a;
+
+  /* Placeholder bars */
+  --color-placeholder-primary: #332748;
+  --color-placeholder-secondary: #2a2137;
+
+  /* Accent */
+  --color-accent: #7a4ee0;
+  --color-accent-text: #c2a4ff;
+  --color-accent-tile: #4e3a86;
+
+  /* Text */
+  --color-text-primary: #e9e3f5;
+  --color-text-secondary: #c9bfe4;
+  --color-text-tertiary: #9a91b5;
+  --color-text-label: #8b81a3;
+  --color-text-faint: #6f6688;
+  --color-text-destructive: #c98b8b;
+
+  /* Image placeholder stripes */
+  --color-stripe-a: #2a1f45;
+  --color-stripe-b: #221a38;
+
+  --font-display: var(--font-poppins);
+  --font-mono-ui: var(--font-plex-mono);
+}
+
+@theme inline {
+  --color-bg: var(--color-bg);
+  --color-surface: var(--color-surface);
+  --color-card: var(--color-card);
+
+  --color-border-hairline: var(--color-border-hairline);
+  --color-border-card: var(--color-border-card);
+  --color-border-input: var(--color-border-input);
+  --color-border-strong: var(--color-border-strong);
+  --color-control-disabled: var(--color-control-disabled);
+
+  --color-placeholder-primary: var(--color-placeholder-primary);
+  --color-placeholder-secondary: var(--color-placeholder-secondary);
+
+  --color-accent: var(--color-accent);
+  --color-accent-text: var(--color-accent-text);
+  --color-accent-tile: var(--color-accent-tile);
+
+  --color-text-primary: var(--color-text-primary);
+  --color-text-secondary: var(--color-text-secondary);
+  --color-text-tertiary: var(--color-text-tertiary);
+  --color-text-label: var(--color-text-label);
+  --color-text-faint: var(--color-text-faint);
+  --color-text-destructive: var(--color-text-destructive);
+
+  --color-stripe-a: var(--color-stripe-a);
+  --color-stripe-b: var(--color-stripe-b);
+
+  --font-display: var(--font-display);
+  --font-mono-ui: var(--font-mono-ui);
+}
+
+* {
+  border-color: var(--color-border-hairline);
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-text-primary);
+  font-family: var(--font-display), sans-serif;
+  -webkit-tap-highlight-color: transparent;
+}
+
+::selection {
+  background: var(--color-accent);
+  color: white;
+}
+
+/* Image placeholder: 45deg stripes standing in for real product photography */
+.img-placeholder {
+  background-image: repeating-linear-gradient(
+    45deg,
+    var(--color-stripe-a) 0px,
+    var(--color-stripe-a) 10px,
+    var(--color-stripe-b) 10px,
+    var(--color-stripe-b) 20px
+  );
+}
+
+/* Grey bar stand-ins for copy, from the wireframe fidelity */
+.bar {
+  background: var(--color-placeholder-primary);
+  border-radius: 4px;
+  display: inline-block;
+}
+
+.label-mono {
+  font-family: var(--font-mono-ui), monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+input,
+textarea,
+select {
+  font-family: inherit;
+}
+
+/* Hide scrollbar for horizontal chip rows while keeping scroll behavior */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
