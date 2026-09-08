@@ -19,7 +19,7 @@ export function BottomTabBar() {
   const unread = useChatStore((s) => s.totalUnread());
 
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-40 flex h-16 border-t border-border-hairline bg-surface lg:hidden">
+    <nav className="fixed inset-x-0 bottom-0 z-40 flex h-16 border-t border-border-hairline bg-white/95 shadow-elevated backdrop-blur lg:hidden">
       {TABS.map((tab) => {
         const active = pathname === tab.href || pathname.startsWith(tab.href + "/");
         const Icon = tab.icon;
@@ -30,7 +30,7 @@ export function BottomTabBar() {
               href={tab.href}
               className="flex flex-1 items-center justify-center"
             >
-              <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-accent text-white">
+              <span className="-mt-6 flex h-[52px] w-[52px] items-center justify-center rounded-full bg-accent text-white shadow-elevated ring-4 ring-white">
                 <Icon size={22} />
               </span>
             </Link>

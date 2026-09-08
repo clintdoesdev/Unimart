@@ -56,7 +56,7 @@ function OrdersContent() {
           />
         ) : (
           orders.map((order) => (
-            <div key={order.id} className="rounded-xl border border-border-card bg-card p-4">
+            <div key={order.id} className="rounded-xl border border-border-card bg-card shadow-soft p-4">
               <div className="flex items-center justify-between">
                 <p className="label-mono text-[11px] text-text-label">{order.id}</p>
                 <Badge tone={order.status === "completed" ? "muted" : "accent"}>

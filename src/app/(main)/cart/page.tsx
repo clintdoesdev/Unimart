@@ -55,7 +55,7 @@ function CartContent() {
               <p className="label-mono mb-2.5 text-[11px] text-text-label">
                 SOLD BY {seller?.name.toUpperCase()}
               </p>
-              <div className="flex flex-col divide-y divide-border-hairline rounded-xl border border-border-card bg-card">
+              <div className="flex flex-col divide-y divide-border-hairline rounded-xl border border-border-card bg-card shadow-soft">
                 {group.lines.map((line) => {
                   const listing = getListing(line.listingId);
                   if (!listing) return null;
@@ -103,7 +103,7 @@ function CartContent() {
           )}
         </div>
 
-        <div className="flex flex-col gap-2 rounded-xl border border-border-card bg-card p-4">
+        <div className="flex flex-col gap-2 rounded-xl border border-border-card bg-card shadow-soft p-4">
           <div className="flex justify-between text-sm text-text-secondary">
             <span>Subtotal</span>
             <span>₹{subtotal}</span>

@@ -271,7 +271,7 @@ export function SearchClient() {
       {sheetOpen && (
         <div className="fixed inset-0 z-50 flex items-end lg:hidden">
           <div className="absolute inset-0 bg-black/50" onClick={() => setSheetOpen(false)} />
-          <div className="relative z-10 max-h-[85vh] w-full overflow-y-auto rounded-t-2xl border-t border-border-card bg-bg p-5 transition-transform duration-200 ease-out">
+          <div className="relative z-10 max-h-[85vh] w-full overflow-y-auto rounded-t-2xl border-t border-border-card bg-white p-5 shadow-elevated transition-transform duration-200 ease-out">
             <div className="mx-auto mb-4 h-1 w-10 rounded-full bg-border-strong" />
             <div className="mb-4 flex items-center justify-between">
               <p className="text-lg">Filters</p>

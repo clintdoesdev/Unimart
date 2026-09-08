@@ -114,7 +114,7 @@ export function ChatsView({ activeId }: { activeId?: string }) {
 
             <Link
               href={`/listing/${active.listingId}`}
-              className="mx-4 mt-3 flex items-center gap-3 rounded-xl border border-border-card bg-card p-2.5 lg:hidden"
+              className="mx-4 mt-3 flex items-center gap-3 rounded-xl border border-border-card bg-card shadow-soft p-2.5 lg:hidden"
             >
               <div className="img-placeholder h-10 w-10 shrink-0 rounded-lg" />
               <div className="min-w-0 flex-1">
@@ -130,7 +130,7 @@ export function ChatsView({ activeId }: { activeId?: string }) {
               {active.messages.map((m) =>
                 m.offerAmount ? (
                   <div key={m.id} className={cn("flex", m.from === "me" ? "justify-end" : "justify-start")}>
-                    <div className="w-56 rounded-xl border border-dashed border-accent bg-surface p-3">
+                    <div className="w-56 rounded-xl border border-dashed border-accent bg-accent-tile/30 p-3">
                       <p className="label-mono text-[10px] text-text-label">OFFER</p>
                       <p className="my-1 text-xl text-accent-text">₹{m.offerAmount}</p>
                       {m.offerStatus === "pending" && m.from === "them" ? (
@@ -161,8 +161,8 @@ export function ChatsView({ activeId }: { activeId?: string }) {
                       className={cn(
                         "max-w-[75%] rounded-2xl px-3.5 py-2.5 text-[15px]",
                         m.from === "me"
-                          ? "rounded-br-md bg-accent text-white"
-                          : "rounded-bl-md bg-card text-text-primary"
+                          ? "rounded-br-md bg-accent text-white shadow-soft"
+                          : "rounded-bl-md border border-border-card bg-card text-text-primary shadow-soft"
                       )}
                     >
                       {m.text}

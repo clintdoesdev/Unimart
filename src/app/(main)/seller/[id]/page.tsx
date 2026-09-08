@@ -103,7 +103,7 @@ export default function SellerProfilePage() {
         ) : (
           <div className="flex flex-col gap-4">
             {REVIEWS.map((r) => (
-              <div key={r.id} className="rounded-xl border border-border-card bg-card p-4">
+              <div key={r.id} className="rounded-xl border border-border-card bg-card shadow-soft p-4">
                 <div className="flex items-center justify-between">
                   <p className="text-[15px]">{r.authorName}</p>
                   <RatingStars rating={r.rating} size={13} />

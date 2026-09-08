@@ -27,7 +27,7 @@ function OrderConfirmedContent() {
 
       <DashedPanel className="w-full">
         <p className="label-mono text-[11px] text-text-label">PICKUP CODE</p>
-        <p className="my-2 text-4xl tracking-[0.2em] text-accent-text">{order.pickupCode}</p>
+        <p className="my-2 mono-code text-4xl tracking-[0.2em] text-accent-text">{order.pickupCode}</p>
         <div className="mt-3 flex justify-between border-t border-border-hairline pt-3 text-sm text-text-secondary">
           <span>{order.id}</span>
           <span>₹{order.total}</span>

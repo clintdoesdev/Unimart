@@ -9,7 +9,7 @@ import {
 import { cn } from "@/lib/cn";
 
 const baseFieldClasses =
-  "w-full rounded-xl border bg-surface px-3.5 text-[15px] text-text-primary placeholder:text-text-faint outline-none transition-colors duration-150 focus:border-accent";
+  "w-full rounded-xl border bg-bg px-3.5 text-[15px] text-text-primary placeholder:text-text-faint outline-none transition-all duration-150 focus:border-accent focus:bg-white focus:ring-4 focus:ring-accent/10";
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   error?: string;

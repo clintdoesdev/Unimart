@@ -27,7 +27,7 @@ export function ProductCard({ listing }: { listing: Listing }) {
             requireAuth(`/listing/${listing.id}`, () => toggle(listing.id));
           }}
           aria-label="Save listing"
-          className="absolute right-2 top-2 flex h-9 w-9 items-center justify-center rounded-full bg-bg/70 backdrop-blur"
+          className="absolute right-2 top-2 flex h-9 w-9 items-center justify-center rounded-full bg-white/85 shadow-soft backdrop-blur"
         >
           <Heart size={16} className={cn(saved ? "fill-accent-text text-accent-text" : "text-text-secondary")} />
         </button>

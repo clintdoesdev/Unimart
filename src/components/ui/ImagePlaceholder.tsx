@@ -1,11 +1,12 @@
 "use client";
 
+import { ImageIcon } from "lucide-react";
 import { cn } from "@/lib/cn";
 
 export function ImagePlaceholder({
   label,
   className,
-  rounded = "rounded-xl",
+  rounded = "rounded-2xl",
 }: {
   label?: string;
   className?: string;
@@ -14,13 +15,14 @@ export function ImagePlaceholder({
   return (
     <div
       className={cn(
-        "img-placeholder flex items-center justify-center overflow-hidden border border-border-card",
+        "img-placeholder flex flex-col items-center justify-center gap-2 overflow-hidden border border-border-card",
         rounded,
         className
       )}
     >
+      <ImageIcon size={22} strokeWidth={1.5} className="text-text-faint" />
       {label && (
-        <span className="label-mono px-2 text-center text-[10px] text-text-label">
+        <span className="px-2 text-center text-[11px] font-medium text-text-faint">
           {label}
         </span>
       )}

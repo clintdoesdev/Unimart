@@ -47,7 +47,7 @@ export function BrowseClient() {
             <Link
               key={c.id}
               href={`/search?category=${c.id}`}
-              className="flex items-center gap-3 rounded-xl border border-border-card bg-card px-4 py-3.5 transition-colors hover:border-accent"
+              className="flex items-center gap-3 rounded-xl border border-border-card bg-card shadow-soft px-4 py-3.5 transition-colors hover:border-accent"
             >
               <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-accent-tile text-text-primary">
                 <CategoryIcon icon={c.icon} />
@@ -64,7 +64,7 @@ export function BrowseClient() {
           <p className="label-mono mb-3 text-[11px] text-text-label">
             {preselected ? `${preselected.replace("-", " ").toUpperCase()} LISTINGS` : `TRENDING IN YOUR DEPT`}
           </p>
-          <div className="flex flex-col divide-y divide-border-hairline rounded-xl border border-border-card bg-card">
+          <div className="flex flex-col divide-y divide-border-hairline rounded-xl border border-border-card bg-card shadow-soft">
             {trending.map((listing) => {
               const seller = getSeller(listing.sellerId);
               return (

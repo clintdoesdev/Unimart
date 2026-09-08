@@ -34,7 +34,7 @@ function OrderTrackingContent() {
 
         <DashedPanel>
           <p className="label-mono text-[11px] text-text-label">PICKUP CODE</p>
-          <p className="my-1 text-3xl tracking-[0.2em] text-accent-text">{order.pickupCode}</p>
+          <p className="my-1 mono-code text-3xl tracking-[0.2em] text-accent-text">{order.pickupCode}</p>
         </DashedPanel>
 
         <div>

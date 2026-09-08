@@ -104,7 +104,7 @@ export default function ListingDetailPage() {
         <div className="px-5 pt-4 lg:px-0 lg:pt-0">
           <div className="relative">
             <ImagePlaceholder label={`gallery — ${photoCount} photos`} className="aspect-[4/3] w-full lg:h-[300px] lg:w-[320px]" />
-            <span className="label-mono absolute bottom-3 right-3 rounded-full bg-bg/80 px-2 py-1 text-[10px]">
+            <span className="label-mono absolute bottom-3 right-3 rounded-full bg-white/90 px-2 py-1 text-[10px] shadow-soft">
               {activePhoto + 1}/{photoCount}
             </span>
           </div>
@@ -136,7 +136,7 @@ export default function ListingDetailPage() {
           </div>
 
           {/* Desktop buy panel */}
-          <div className="hidden rounded-xl border border-border-card bg-card p-5 lg:sticky lg:top-20 lg:block">
+          <div className="hidden rounded-xl border border-border-card bg-card shadow-soft p-5 lg:sticky lg:top-20 lg:block">
             <p className="text-2xl text-accent-text">{listing.free ? "FREE" : `₹${listing.price}`}</p>
             <p className="mt-1 text-sm text-text-tertiary">Free campus pickup available</p>
             <div className="mt-4 flex gap-2.5">
@@ -171,7 +171,7 @@ export default function ListingDetailPage() {
 
           <Link
             href={`/seller/${seller.id}`}
-            className="flex items-center gap-3 rounded-xl border border-border-card bg-card p-3.5"
+            className="flex items-center gap-3 rounded-xl border border-border-card bg-card shadow-soft p-3.5"
           >
             <Avatar name={seller.name} size={44} />
             <div className="min-w-0 flex-1">

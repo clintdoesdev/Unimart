@@ -24,8 +24,8 @@ export function TopBar() {
   }
 
   return (
-    <header className="sticky top-0 z-30 hidden h-16 items-center gap-6 border-b border-border-hairline bg-surface px-6 lg:flex">
-      <Link href="/home" className="shrink-0 text-xl text-accent-text">
+    <header className="sticky top-0 z-30 hidden h-16 items-center gap-6 border-b border-border-hairline bg-white px-6 shadow-soft lg:flex">
+      <Link href="/home" className="shrink-0 text-xl font-bold text-accent-text">
         Uni Mart
       </Link>
 
@@ -71,7 +71,7 @@ export function TopBar() {
         </Link>
         <Link
           href="/sell"
-          className="label-mono rounded-lg bg-accent px-3.5 py-2 text-[11px] text-white hover:brightness-110"
+          className="label-mono rounded-lg bg-accent px-3.5 py-2 text-[11px] text-white shadow-soft hover:bg-accent-text"
         >
           + SELL
         </Link>

@@ -23,10 +23,10 @@ export function Avatar({
   return (
     <div
       className={cn(
-        "flex shrink-0 items-center justify-center rounded-full bg-accent-tile text-text-primary",
+        "flex shrink-0 items-center justify-center rounded-full bg-accent-tile font-semibold text-accent-text",
         className
       )}
-      style={{ width: size, height: size, fontSize: size * 0.38 }}
+      style={{ width: size, height: size, fontSize: size * 0.36 }}
     >
       {initials(name)}
     </div>

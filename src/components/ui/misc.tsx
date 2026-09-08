@@ -15,9 +15,9 @@ export function ProgressBar({ percent }: { percent: number }) {
 
 export function StatTile({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex-1 rounded-xl border border-border-card bg-card px-3.5 py-3">
+    <div className="flex-1 rounded-2xl border border-border-card bg-card px-3.5 py-3 shadow-soft">
       <p className="label-mono text-[10px] text-text-label">{label}</p>
-      <p className="mt-1 text-xl">{value}</p>
+      <p className="mt-1 text-xl font-semibold text-text-primary">{value}</p>
     </div>
   );
 }
@@ -30,9 +30,9 @@ export function Badge({
   tone?: "accent" | "muted" | "destructive";
 }) {
   const toneClasses = {
-    accent: "bg-accent text-white",
+    accent: "bg-accent-tile text-accent-text",
     muted: "bg-placeholder-primary text-text-secondary",
-    destructive: "bg-text-destructive/20 text-text-destructive",
+    destructive: "bg-red-50 text-text-destructive",
   }[tone];
   return (
     <span className={cn("label-mono rounded-full px-2 py-0.5 text-[10px]", toneClasses)}>
@@ -49,7 +49,7 @@ export function Card({
   children: React.ReactNode;
 }) {
   return (
-    <div className={cn("rounded-xl border border-border-card bg-card", className)}>
+    <div className={cn("rounded-2xl border border-border-card bg-card shadow-soft", className)}>
       {children}
     </div>
   );
@@ -105,8 +105,8 @@ export function RadioCard({
       type="button"
       onClick={onSelect}
       className={cn(
-        "flex w-full items-start gap-3 rounded-xl border px-4 py-3.5 text-left transition-colors duration-150",
-        selected ? "border-accent bg-surface" : "border-border-card bg-card"
+        "flex w-full items-start gap-3 rounded-xl border px-4 py-3.5 text-left transition-all duration-150",
+        selected ? "border-accent bg-accent-tile/40 shadow-soft" : "border-border-card bg-card"
       )}
     >
       <span
@@ -135,15 +135,15 @@ export function Segmented<T extends string>({
   onChange: (value: T) => void;
 }) {
   return (
-    <div className="flex rounded-xl border border-border-input bg-surface p-1">
+    <div className="flex rounded-xl border border-border-input bg-bg p-1">
       {options.map((opt) => (
         <button
           key={opt.value}
           type="button"
           onClick={() => onChange(opt.value)}
           className={cn(
-            "label-mono flex-1 rounded-lg py-2.5 text-[11px] transition-colors duration-150",
-            value === opt.value ? "bg-accent text-white" : "text-text-secondary"
+            "label-mono flex-1 rounded-lg py-2.5 text-[11px] transition-all duration-150",
+            value === opt.value ? "bg-accent text-white shadow-soft" : "text-text-secondary"
           )}
         >
           {opt.label}
@@ -163,7 +163,7 @@ export function DashedPanel({
   return (
     <div
       className={cn(
-        "rounded-xl border border-dashed border-border-strong bg-surface p-4",
+        "rounded-xl border border-dashed border-border-strong bg-accent-tile/30 p-4",
         className
       )}
     >
