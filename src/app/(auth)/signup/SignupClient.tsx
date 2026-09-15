@@ -7,7 +7,7 @@ import { MobileHeader } from "@/components/nav/MobileHeader";
 import { Input, Label, Select } from "@/components/ui/Field";
 import { Button } from "@/components/ui/Button";
 import { CAMPUSES } from "@/lib/labels";
-import { isUniversityEmail } from "@/lib/university-email";
+import { isValidEmail } from "@/lib/validate-email";
 import { useSessionStore } from "@/store/session";
 import { ApiError } from "@/lib/api";
 
@@ -27,12 +27,12 @@ export function SignupClient() {
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
-  const emailValid = isUniversityEmail(email);
+  const emailValid = isValidEmail(email);
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     if (!emailValid) {
-      setError("Use your university email address (.edu / .ac.in)");
+      setError("Enter a valid email address");
       return;
     }
     if (!isLogin && !agree) {
@@ -80,15 +80,14 @@ export function SignupClient() {
         )}
 
         <div>
-          <Label>University email</Label>
+          <Label>Email</Label>
           <Input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="you@university.edu"
+            placeholder="you@example.com"
             className={email.length > 0 && !emailValid ? "border-text-destructive" : "border-accent"}
           />
-          <p className="mt-1.5 text-xs text-text-tertiary">Must match an allowed university domain</p>
         </div>
 
         {!isLogin && (

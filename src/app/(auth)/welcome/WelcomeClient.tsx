@@ -15,7 +15,7 @@ export function WelcomeClient() {
         </div>
         <h1 className="text-4xl text-accent-text">Uni Mart</h1>
         <p className="max-w-xs text-[15px] text-text-secondary">
-          Sign in with your university email to message sellers, buy and sell.
+          Sign in with your email to message sellers, buy and sell.
         </p>
       </div>
 

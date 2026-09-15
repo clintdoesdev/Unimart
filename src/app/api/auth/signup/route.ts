@@ -3,7 +3,6 @@ import { z } from "zod";
 import { db } from "@/lib/db";
 import { hashPassword } from "@/lib/server/auth";
 import { issueOtp } from "@/lib/server/otp";
-import { isUniversityEmail } from "@/lib/university-email";
 
 const bodySchema = z.object({
   fullName: z.string().trim().min(1).max(120),
@@ -18,10 +17,6 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid signup details." }, { status: 400 });
   }
   const { fullName, email, campus, password } = parsed.data;
-
-  if (!isUniversityEmail(email)) {
-    return NextResponse.json({ error: "Use your university email address (.edu / .ac.in)." }, { status: 400 });
-  }
 
   const existing = await db.user.findUnique({ where: { email } });
   if (existing?.emailVerifiedAt) {

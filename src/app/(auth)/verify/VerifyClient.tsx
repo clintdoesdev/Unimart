@@ -82,7 +82,7 @@ export function VerifyClient() {
         <p className="text-[15px] text-text-secondary">
           Enter the 5-character code sent to
           <br />
-          <span className="text-text-primary">{email || "your university email"}</span>
+          <span className="text-text-primary">{email || "your email"}</span>
         </p>
 
         <div className="flex gap-2.5">
