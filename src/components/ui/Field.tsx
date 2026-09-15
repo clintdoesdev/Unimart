@@ -9,7 +9,7 @@ import {
 import { cn } from "@/lib/cn";
 
 const baseFieldClasses =
-  "w-full rounded-xl border bg-bg px-3.5 text-[15px] text-text-primary placeholder:text-text-faint outline-none transition-all duration-150 focus:border-accent focus:bg-white focus:ring-4 focus:ring-accent/10";
+  "w-full border bg-bg px-4 text-base text-text-primary placeholder:text-text-secondary outline-none transition-all duration-150 focus:border-accent focus:bg-white focus:ring-4 focus:ring-accent/10";
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   error?: string;
@@ -22,7 +22,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         ref={ref}
         className={cn(
           baseFieldClasses,
-          "h-12",
+          "h-12 rounded-full",
           error ? "border-text-destructive" : "border-border-input",
           className
         )}
@@ -45,7 +45,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
         ref={ref}
         className={cn(
           baseFieldClasses,
-          "min-h-[100px] py-3 resize-none",
+          "min-h-[100px] rounded-[28px] py-3.5 resize-none",
           error ? "border-text-destructive" : "border-border-input",
           className
         )}
@@ -63,7 +63,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
   ({ className, children, ...props }, ref) => (
     <select
       ref={ref}
-      className={cn(baseFieldClasses, "h-12 border-border-input appearance-none", className)}
+      className={cn(baseFieldClasses, "h-12 rounded-full border-border-input appearance-none", className)}
       {...props}
     >
       {children}

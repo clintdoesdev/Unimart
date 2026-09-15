@@ -23,7 +23,7 @@ export function MobileHeader({
           type="button"
           onClick={() => (onBack ? onBack() : router.back())}
           aria-label="Back"
-          className="flex h-9 w-9 items-center justify-center rounded-lg text-text-secondary hover:bg-placeholder-secondary"
+          className="flex h-9 w-9 items-center justify-center rounded-full text-text-secondary hover:bg-placeholder-secondary"
         >
           <ChevronLeft size={20} />
         </button>

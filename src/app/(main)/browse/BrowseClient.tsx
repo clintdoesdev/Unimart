@@ -32,7 +32,7 @@ export function BrowseClient() {
     <div className="flex flex-1 flex-col">
       <MobileHeader title="Browse" showBack={false} />
       <div className="flex flex-1 flex-col gap-6 px-5 py-5 lg:px-6 lg:py-6">
-        <div className="flex h-11 items-center gap-2 rounded-xl border border-border-input bg-surface px-3.5 lg:max-w-sm">
+        <div className="flex h-11 items-center gap-2 rounded-full border border-border-input bg-surface px-3.5 lg:max-w-sm">
           <Search size={16} className="text-text-faint" />
           <input
             value={query}
@@ -47,9 +47,9 @@ export function BrowseClient() {
             <Link
               key={c.id}
               href={`/search?category=${c.id}`}
-              className="flex items-center gap-3 rounded-xl border border-border-card bg-card shadow-soft px-4 py-3.5 transition-colors hover:border-accent"
+              className="flex items-center gap-3 rounded-[28px] bg-card px-4 py-3.5 shadow-soft transition-shadow hover:shadow-elevated"
             >
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-accent-tile text-text-primary">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-accent-tile text-accent-text">
                 <CategoryIcon icon={c.icon} />
               </span>
               <span>
@@ -64,7 +64,7 @@ export function BrowseClient() {
           <p className="label-mono mb-3 text-[11px] text-text-label">
             {preselected ? `${preselected.replace("-", " ").toUpperCase()} LISTINGS` : `TRENDING IN YOUR DEPT`}
           </p>
-          <div className="flex flex-col divide-y divide-border-hairline rounded-xl border border-border-card bg-card shadow-soft">
+          <div className="flex flex-col divide-y divide-border-hairline rounded-[28px] bg-card shadow-soft">
             {trending.map((listing) => {
               const seller = getSeller(listing.sellerId);
               return (
@@ -73,7 +73,7 @@ export function BrowseClient() {
                   href={`/listing/${listing.id}`}
                   className="flex items-center gap-3 px-4 py-3 hover:bg-surface"
                 >
-                  <div className="img-placeholder h-12 w-12 shrink-0 rounded-lg border border-border-card" />
+                  <div className="img-placeholder h-12 w-12 shrink-0 rounded-xl" />
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-[15px]">{listing.title}</p>
                     <p className="label-mono truncate text-[10px] text-text-label">

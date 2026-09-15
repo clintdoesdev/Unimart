@@ -63,7 +63,7 @@ function OrderTrackingContent() {
         </div>
 
         <div className="flex gap-3">
-          <button onClick={chatSeller} className="h-11 flex-1 rounded-xl border border-border-strong text-[15px]">
+          <button onClick={chatSeller} className="h-11 flex-1 rounded-full border border-border-strong text-[15px]">
             Chat seller
           </button>
           {order.status !== "completed" && (

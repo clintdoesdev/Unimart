@@ -43,7 +43,7 @@ function SettingsContent() {
       <div className="flex flex-col gap-7 px-5 py-5 lg:mx-auto lg:w-full lg:max-w-lg">
         <section>
           <p className="label-mono mb-2 text-[11px] text-text-label">ACCOUNT</p>
-          <div className="flex flex-col divide-y divide-border-hairline rounded-xl border border-border-card bg-card shadow-soft">
+          <div className="flex flex-col divide-y divide-border-hairline rounded-[28px] bg-card shadow-soft">
             {["Edit profile", "Campus & hostel", "Payment methods"].map((label) => (
               <button key={label} className="flex items-center justify-between px-4 py-3.5 text-left text-[15px]">
                 {label}
@@ -55,7 +55,7 @@ function SettingsContent() {
 
         <section>
           <p className="label-mono mb-2 text-[11px] text-text-label">PREFERENCES</p>
-          <div className="flex flex-col divide-y divide-border-hairline rounded-xl border border-border-card bg-card shadow-soft">
+          <div className="flex flex-col divide-y divide-border-hairline rounded-[28px] bg-card shadow-soft">
             <div className="flex items-center justify-between px-4 py-3.5">
               <span className="text-[15px]">Push notifications</span>
               <Toggle checked={pushNotifs} onChange={setPushNotifs} />
@@ -73,7 +73,7 @@ function SettingsContent() {
 
         <section>
           <p className="label-mono mb-2 text-[11px] text-text-label">SUPPORT</p>
-          <div className="flex flex-col divide-y divide-border-hairline rounded-xl border border-border-card bg-card shadow-soft">
+          <div className="flex flex-col divide-y divide-border-hairline rounded-[28px] bg-card shadow-soft">
             {["Trading rules & safety", "Report a problem"].map((label) => (
               <button key={label} className="flex items-center justify-between px-4 py-3.5 text-left text-[15px]">
                 {label}

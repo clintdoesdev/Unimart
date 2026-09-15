@@ -66,13 +66,13 @@ export default function ListingDetailPage() {
     <div className="flex flex-1 flex-col pb-24 lg:pb-8">
       {/* Mobile header */}
       <header className="flex h-14 shrink-0 items-center justify-between px-4 lg:hidden">
-        <button onClick={() => router.back()} aria-label="Back" className="flex h-9 w-9 items-center justify-center rounded-lg text-text-secondary">
+        <button onClick={() => router.back()} aria-label="Back" className="flex h-9 w-9 items-center justify-center rounded-full text-text-secondary">
           <ChevronLeft size={20} />
         </button>
         <button
           onClick={() => requireAuth(`/listing/${listing.id}`, () => toggleSaved(listing.id))}
           aria-label="Save"
-          className="flex h-9 w-9 items-center justify-center rounded-lg text-text-secondary"
+          className="flex h-9 w-9 items-center justify-center rounded-full text-text-secondary"
         >
           <Heart size={20} className={saved ? "fill-accent-text text-accent-text" : ""} />
         </button>
@@ -94,7 +94,7 @@ export default function ListingDetailPage() {
             <button key={i} onClick={() => setActivePhoto(i)}>
               <ImagePlaceholder
                 label={`photo ${i + 1}`}
-                className={cn("h-24 w-full", activePhoto === i && "border-accent")}
+                className={cn("h-24 w-full", activePhoto === i && "ring-2 ring-accent")}
               />
             </button>
           ))}
@@ -136,7 +136,7 @@ export default function ListingDetailPage() {
           </div>
 
           {/* Desktop buy panel */}
-          <div className="hidden rounded-xl border border-border-card bg-card shadow-soft p-5 lg:sticky lg:top-20 lg:block">
+          <div className="hidden rounded-[28px] bg-card shadow-soft p-5 lg:sticky lg:top-20 lg:block">
             <p className="text-2xl text-accent-text">{listing.free ? "FREE" : `₹${listing.price}`}</p>
             <p className="mt-1 text-sm text-text-tertiary">Free campus pickup available</p>
             <div className="mt-4 flex gap-2.5">
@@ -146,14 +146,14 @@ export default function ListingDetailPage() {
               <button
                 onClick={() => requireAuth(`/listing/${listing.id}`, () => toggleSaved(listing.id))}
                 aria-label="Save"
-                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-border-strong"
+                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-border-strong"
               >
                 <Heart size={18} className={saved ? "fill-accent-text text-accent-text" : "text-text-secondary"} />
               </button>
             </div>
             <button
               onClick={onMessage}
-              className="mt-2.5 flex h-11 w-full items-center justify-center gap-2 rounded-xl border border-border-strong text-[15px]"
+              className="mt-2.5 flex h-11 w-full items-center justify-center gap-2 rounded-full border border-border-strong text-[15px]"
             >
               <MessageCircle size={16} />
               Message seller
@@ -171,7 +171,7 @@ export default function ListingDetailPage() {
 
           <Link
             href={`/seller/${seller.id}`}
-            className="flex items-center gap-3 rounded-xl border border-border-card bg-card shadow-soft p-3.5"
+            className="flex items-center gap-3 rounded-[28px] bg-card shadow-soft p-3.5"
           >
             <Avatar name={seller.name} size={44} />
             <div className="min-w-0 flex-1">
@@ -206,13 +206,13 @@ export default function ListingDetailPage() {
         <button
           onClick={() => requireAuth(`/listing/${listing.id}`, () => toggleSaved(listing.id))}
           aria-label="Save"
-          className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-border-strong"
+          className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-border-strong"
         >
           <Heart size={18} className={saved ? "fill-accent-text text-accent-text" : "text-text-secondary"} />
         </button>
         <button
           onClick={onMessage}
-          className="h-11 flex-1 rounded-xl border border-border-strong text-[15px]"
+          className="h-11 flex-1 rounded-full border border-border-strong text-[15px]"
         >
           Message
         </button>

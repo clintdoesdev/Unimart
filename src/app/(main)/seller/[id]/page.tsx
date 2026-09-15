@@ -51,13 +51,13 @@ export default function SellerProfilePage() {
         </div>
 
         <div className="mt-2 flex gap-3">
-          <button onClick={onMessage} className="h-10 rounded-xl border border-border-strong px-5 text-[15px]">
+          <button onClick={onMessage} className="h-10 rounded-full border border-border-strong px-5 text-[15px]">
             Message
           </button>
           <button
             onClick={() => requireAuth(`/seller/${seller!.id}`, () => setFollowing((f) => !f))}
             className={cn(
-              "h-10 rounded-xl px-5 text-[15px]",
+              "h-10 rounded-full px-5 text-[15px]",
               following ? "border border-accent text-accent-text" : "bg-accent text-white"
             )}
           >
@@ -103,7 +103,7 @@ export default function SellerProfilePage() {
         ) : (
           <div className="flex flex-col gap-4">
             {REVIEWS.map((r) => (
-              <div key={r.id} className="rounded-xl border border-border-card bg-card shadow-soft p-4">
+              <div key={r.id} className="rounded-[28px] bg-card shadow-soft p-4">
                 <div className="flex items-center justify-between">
                   <p className="text-[15px]">{r.authorName}</p>
                   <RatingStars rating={r.rating} size={13} />

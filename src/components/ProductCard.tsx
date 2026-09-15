@@ -16,10 +16,10 @@ export function ProductCard({ listing }: { listing: Listing }) {
   return (
     <Link
       href={`/listing/${listing.id}`}
-      className="group flex flex-col gap-2 rounded-xl border border-transparent p-1.5 transition-colors hover:border-border-card"
+      className="flex flex-col gap-3 rounded-[28px] bg-card p-2 shadow-soft transition-shadow hover:shadow-elevated"
     >
       <div className="relative">
-        <ImagePlaceholder label="product shot" className="aspect-square w-full" />
+        <ImagePlaceholder label="product shot" className="aspect-square w-full" rounded="rounded-[20px]" />
         <button
           type="button"
           onClick={(e) => {
@@ -27,17 +27,17 @@ export function ProductCard({ listing }: { listing: Listing }) {
             requireAuth(`/listing/${listing.id}`, () => toggle(listing.id));
           }}
           aria-label="Save listing"
-          className="absolute right-2 top-2 flex h-9 w-9 items-center justify-center rounded-full bg-white/85 shadow-soft backdrop-blur"
+          className="absolute right-2 top-2 flex h-9 w-9 items-center justify-center rounded-full bg-white/90 shadow-pill backdrop-blur"
         >
-          <Heart size={16} className={cn(saved ? "fill-accent-text text-accent-text" : "text-text-secondary")} />
+          <Heart size={16} className={cn(saved ? "fill-accent text-accent" : "text-text-secondary")} />
         </button>
       </div>
-      <div>
-        <p className="truncate text-[15px] leading-tight">{listing.title}</p>
-        <p className="label-mono mt-0.5 truncate text-[10px] text-text-label">
+      <div className="px-1.5 pb-2">
+        <p className="truncate text-sm font-semibold tracking-tight text-text-primary">{listing.title}</p>
+        <p className="mt-0.5 truncate text-[11px] text-text-secondary">
           {listing.department} · {listing.location}
         </p>
-        <p className="mt-1 text-accent-text">{listing.free ? "FREE" : `₹${listing.price}`}</p>
+        <p className="mt-1 text-sm font-medium text-accent">{listing.free ? "FREE" : `₹${listing.price}`}</p>
       </div>
     </Link>
   );

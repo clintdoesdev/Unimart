@@ -17,7 +17,7 @@ function WalletContent() {
       <MobileHeader title="Wallet & payouts" />
 
       <div className="flex flex-col gap-6 px-5 py-5 lg:mx-auto lg:w-full lg:max-w-2xl">
-        <div className="rounded-2xl border border-border-card bg-card shadow-soft p-5">
+        <div className="rounded-[28px] bg-card shadow-soft p-5">
           <p className="label-mono text-[11px] text-text-label">BALANCE</p>
           <p className="my-2 text-4xl text-accent-text">₹{balance}</p>
           <div className="mt-3 flex gap-3">
@@ -32,7 +32,7 @@ function WalletContent() {
 
         <div>
           <p className="label-mono mb-3 text-[11px] text-text-label">ACTIVITY</p>
-          <div className="flex flex-col divide-y divide-border-hairline rounded-xl border border-border-card bg-card shadow-soft">
+          <div className="flex flex-col divide-y divide-border-hairline rounded-[28px] bg-card shadow-soft">
             {ledger.map((entry) => (
               <div key={entry.id} className="flex items-center justify-between px-4 py-3.5">
                 <div>

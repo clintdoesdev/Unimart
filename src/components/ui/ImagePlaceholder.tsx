@@ -6,7 +6,7 @@ import { cn } from "@/lib/cn";
 export function ImagePlaceholder({
   label,
   className,
-  rounded = "rounded-2xl",
+  rounded = "rounded-[20px]",
 }: {
   label?: string;
   className?: string;
@@ -15,7 +15,7 @@ export function ImagePlaceholder({
   return (
     <div
       className={cn(
-        "img-placeholder flex flex-col items-center justify-center gap-2 overflow-hidden border border-border-card",
+        "img-placeholder flex flex-col items-center justify-center gap-2 overflow-hidden",
         rounded,
         className
       )}

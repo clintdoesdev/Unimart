@@ -129,7 +129,7 @@ function CheckoutContent() {
 
         {/* Summary column */}
         <div className="px-5 lg:sticky lg:top-20 lg:h-fit lg:px-0">
-          <div className="flex flex-col gap-2 rounded-xl border border-border-card bg-card shadow-soft p-4">
+          <div className="flex flex-col gap-2 rounded-[28px] bg-card shadow-soft p-4">
             <div className="flex justify-between text-sm text-text-secondary">
               <span>Subtotal</span>
               <span>₹{subtotal}</span>

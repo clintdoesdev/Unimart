@@ -37,13 +37,13 @@ function OrderConfirmedContent() {
       <div className="flex w-full flex-col gap-3">
         <Link
           href={`/orders/${order.id}`}
-          className="flex h-12 items-center justify-center rounded-xl bg-accent text-[15px] text-white"
+          className="flex h-12 items-center justify-center rounded-full bg-accent text-[15px] text-white shadow-accent hover:bg-accent-hover"
         >
           Track order
         </Link>
         <Link
           href="/home"
-          className="flex h-12 items-center justify-center rounded-xl border border-border-strong text-[15px]"
+          className="flex h-12 items-center justify-center rounded-full border border-border-strong text-[15px]"
         >
           Keep shopping
         </Link>

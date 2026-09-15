@@ -53,7 +53,7 @@ export function ChatsView({ activeId }: { activeId?: string }) {
           <h1 className="text-lg">Chats</h1>
         </div>
         <div className="p-3">
-          <div className="flex h-10 items-center gap-2 rounded-lg border border-border-input bg-surface px-3">
+          <div className="flex h-10 items-center gap-2 rounded-full border border-border-input bg-surface px-3">
             <Search size={15} className="text-text-faint" />
             <input
               value={query}
@@ -114,9 +114,9 @@ export function ChatsView({ activeId }: { activeId?: string }) {
 
             <Link
               href={`/listing/${active.listingId}`}
-              className="mx-4 mt-3 flex items-center gap-3 rounded-xl border border-border-card bg-card shadow-soft p-2.5 lg:hidden"
+              className="mx-4 mt-3 flex items-center gap-3 rounded-[28px] bg-card shadow-soft p-2.5 lg:hidden"
             >
-              <div className="img-placeholder h-10 w-10 shrink-0 rounded-lg" />
+              <div className="img-placeholder h-10 w-10 shrink-0 rounded-xl" />
               <div className="min-w-0 flex-1">
                 <p className="truncate text-sm">{getListing(active.listingId)?.title}</p>
               </div>
@@ -130,20 +130,20 @@ export function ChatsView({ activeId }: { activeId?: string }) {
               {active.messages.map((m) =>
                 m.offerAmount ? (
                   <div key={m.id} className={cn("flex", m.from === "me" ? "justify-end" : "justify-start")}>
-                    <div className="w-56 rounded-xl border border-dashed border-accent bg-accent-tile/30 p-3">
+                    <div className="w-56 rounded-[20px] bg-accent-tile p-3 shadow-soft">
                       <p className="label-mono text-[10px] text-text-label">OFFER</p>
-                      <p className="my-1 text-xl text-accent-text">₹{m.offerAmount}</p>
+                      <p className="my-1 text-xl font-medium text-accent">₹{m.offerAmount}</p>
                       {m.offerStatus === "pending" && m.from === "them" ? (
                         <div className="flex gap-2">
                           <button
                             onClick={() => respondToOffer(active.id, m.id, "accepted")}
-                            className="h-8 flex-1 rounded-lg bg-accent text-xs text-white"
+                            className="h-8 flex-1 rounded-full bg-accent text-xs text-white shadow-accent"
                           >
                             Accept
                           </button>
                           <button
                             onClick={() => respondToOffer(active.id, m.id, "declined")}
-                            className="h-8 flex-1 rounded-lg border border-border-strong text-xs"
+                            className="h-8 flex-1 rounded-full border border-border-strong bg-white text-xs"
                           >
                             Decline
                           </button>
@@ -162,7 +162,7 @@ export function ChatsView({ activeId }: { activeId?: string }) {
                         "max-w-[75%] rounded-2xl px-3.5 py-2.5 text-[15px]",
                         m.from === "me"
                           ? "rounded-br-md bg-accent text-white shadow-soft"
-                          : "rounded-bl-md border border-border-card bg-card text-text-primary shadow-soft"
+                          : "rounded-bl-md bg-card text-text-primary shadow-soft"
                       )}
                     >
                       {m.text}
@@ -199,10 +199,10 @@ export function ChatsView({ activeId }: { activeId?: string }) {
             <p className="text-[15px]">{getListing(active.listingId)?.title}</p>
             <p className="mt-1 text-lg text-accent-text">₹{getListing(active.listingId)?.price}</p>
           </div>
-          <button onClick={() => router.push(`/listing/${active.listingId}`)} className="h-10 rounded-xl bg-accent text-[15px] text-white">
+          <button onClick={() => router.push(`/listing/${active.listingId}`)} className="h-10 rounded-full bg-accent text-[15px] text-white shadow-accent hover:bg-accent-hover">
             Buy now
           </button>
-          <button onClick={makeOffer} className="h-10 rounded-xl border border-border-strong text-[15px]">
+          <button onClick={makeOffer} className="h-10 rounded-full border border-border-strong text-[15px]">
             Make offer
           </button>
           <p className="text-xs text-text-faint">

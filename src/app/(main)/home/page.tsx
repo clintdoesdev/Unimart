@@ -56,7 +56,7 @@ export default function HomePage() {
           <select
             value={campus}
             onChange={(e) => setCampus(e.target.value)}
-            className="h-10 w-full rounded-lg border border-border-input bg-surface px-3 text-sm outline-none focus:border-accent"
+            className="h-10 w-full rounded-full border border-border-input bg-surface px-3 text-sm outline-none focus:border-accent"
           >
             <option>{campus}</option>
           </select>
@@ -68,7 +68,7 @@ export default function HomePage() {
               <Link
                 key={c.id}
                 href={`/browse?category=${c.id}`}
-                className="rounded-lg px-3 py-2 text-sm text-text-secondary hover:bg-surface hover:text-text-primary"
+                className="rounded-full px-4 py-2 text-sm text-text-secondary hover:bg-surface hover:text-text-primary"
               >
                 {c.name}
               </Link>
@@ -106,7 +106,7 @@ export default function HomePage() {
         </div>
 
         <div className="px-5 pt-4 lg:hidden">
-          <Link href="/search" className="flex h-11 items-center gap-2 rounded-xl border border-border-input bg-surface px-3.5 text-text-faint">
+          <Link href="/search" className="flex h-11 items-center gap-2 rounded-full border border-border-input bg-surface px-3.5 text-text-faint">
             <Search size={16} />
             Search listings...
           </Link>
@@ -131,7 +131,7 @@ export default function HomePage() {
         <div className="mt-6 flex items-center justify-between px-5 lg:px-0">
           <h2 className="text-lg">Fresh listings</h2>
           <div className="flex items-center gap-3">
-            <select className="label-mono hidden h-9 rounded-lg border border-border-input bg-surface px-2 text-[11px] lg:block">
+            <select className="label-mono hidden h-9 rounded-full border border-border-input bg-surface px-2 text-[11px] lg:block">
               <option>SORT: NEWEST</option>
               <option>SORT: PRICE LOW-HIGH</option>
               <option>SORT: PRICE HIGH-LOW</option>

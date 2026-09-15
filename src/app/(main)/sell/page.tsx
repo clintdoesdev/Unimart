@@ -81,7 +81,7 @@ function SellContent() {
 
         <div>
           <Label>Price</Label>
-          <div className="flex items-center gap-2 rounded-xl border border-border-input bg-surface px-3.5">
+          <div className="flex items-center gap-2 rounded-full border border-border-input bg-surface px-3.5">
             <span className="text-text-tertiary">₹</span>
             <input
               value={price}

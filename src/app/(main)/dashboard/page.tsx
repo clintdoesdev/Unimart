@@ -48,7 +48,7 @@ function DashboardContent() {
                 key={item}
                 onClick={() => setNav(item)}
                 className={cn(
-                  "rounded-lg px-3 py-2 text-left text-sm",
+                  "rounded-full px-4 py-2 text-left text-sm",
                   nav === item ? "bg-surface text-text-primary" : "text-text-secondary hover:bg-surface"
                 )}
               >
@@ -68,7 +68,7 @@ function DashboardContent() {
             </div>
           </div>
 
-          <div className="hidden rounded-xl border border-border-card bg-card shadow-soft p-5 lg:block">
+          <div className="hidden rounded-[28px] bg-card shadow-soft p-5 lg:block">
             <p className="label-mono mb-4 text-[11px] text-text-label">LAST 7 DAYS</p>
             <div className="flex h-32 gap-3">
               {CHART.map((v, i) => (
@@ -97,10 +97,10 @@ function DashboardContent() {
           </div>
 
           {/* Mobile list */}
-          <div className="flex flex-col divide-y divide-border-hairline rounded-xl border border-border-card bg-card shadow-soft lg:hidden">
+          <div className="flex flex-col divide-y divide-border-hairline rounded-[28px] bg-card shadow-soft lg:hidden">
             {myListings.map((listing) => (
               <div key={listing.id} className="flex items-center gap-3 p-3.5">
-                <div className="img-placeholder h-12 w-12 shrink-0 rounded-lg border border-border-card" />
+                <div className="img-placeholder h-12 w-12 shrink-0 rounded-xl" />
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-[15px]">{listing.title}</p>
                   <p className="label-mono mt-0.5 text-[10px] text-text-label">
@@ -116,7 +116,7 @@ function DashboardContent() {
                     <MoreHorizontal size={18} />
                   </button>
                   {openMenuId === listing.id && (
-                    <div className="absolute right-0 top-8 z-10 w-40 rounded-lg border border-border-card bg-surface py-1 shadow-elevated">
+                    <div className="absolute right-0 top-8 z-10 w-40 rounded-2xl border border-border-card bg-surface py-1 shadow-elevated">
                       {listing.status !== "sold" && (
                         <button
                           onClick={() => {
@@ -147,7 +147,7 @@ function DashboardContent() {
           </div>
 
           {/* Desktop table */}
-          <div className="hidden overflow-hidden rounded-xl border border-border-card bg-white shadow-soft lg:block">
+          <div className="hidden overflow-hidden rounded-[28px] bg-white shadow-soft lg:block">
             <table className="w-full text-sm">
               <thead>
                 <tr className="label-mono border-b border-border-hairline bg-card text-left text-[10px] text-text-label">
@@ -162,7 +162,7 @@ function DashboardContent() {
                 {myListings.map((listing) => (
                   <tr key={listing.id} className="border-b border-border-hairline last:border-0">
                     <td className="flex items-center gap-3 px-4 py-3">
-                      <div className="img-placeholder h-10 w-10 shrink-0 rounded-lg border border-border-card" />
+                      <div className="img-placeholder h-10 w-10 shrink-0 rounded-xl" />
                       <span className="truncate">{listing.title}</span>
                     </td>
                     <td className="px-4 py-3 text-accent-text">₹{listing.price}</td>
@@ -176,7 +176,7 @@ function DashboardContent() {
                           <MoreHorizontal size={16} />
                         </button>
                         {openMenuId === listing.id && (
-                          <div className="absolute right-0 top-7 z-10 w-40 rounded-lg border border-border-card bg-surface py-1 text-left shadow-elevated">
+                          <div className="absolute right-0 top-7 z-10 w-40 rounded-2xl border border-border-card bg-surface py-1 text-left shadow-elevated">
                             {listing.status !== "sold" && (
                               <button
                                 onClick={() => {
@@ -200,7 +200,7 @@ function DashboardContent() {
 
           <Link
             href="/sell"
-            className="flex h-[52px] w-full items-center justify-center rounded-xl bg-accent text-[15px] text-white lg:hidden"
+            className="flex h-[52px] w-full items-center justify-center rounded-full bg-accent text-[15px] text-white shadow-accent lg:hidden"
           >
             + New listing
           </Link>

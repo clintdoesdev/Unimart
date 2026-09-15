@@ -15,9 +15,9 @@ export function ProgressBar({ percent }: { percent: number }) {
 
 export function StatTile({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex-1 rounded-2xl border border-border-card bg-card px-3.5 py-3 shadow-soft">
+    <div className="flex-1 rounded-[28px] bg-card px-4 py-3.5 shadow-soft">
       <p className="label-mono text-[10px] text-text-label">{label}</p>
-      <p className="mt-1 text-xl font-semibold text-text-primary">{value}</p>
+      <p className="mt-1 text-xl font-medium text-text-primary">{value}</p>
     </div>
   );
 }
@@ -35,7 +35,7 @@ export function Badge({
     destructive: "bg-red-50 text-text-destructive",
   }[tone];
   return (
-    <span className={cn("label-mono rounded-full px-2 py-0.5 text-[10px]", toneClasses)}>
+    <span className={cn("label-mono rounded-full px-2.5 py-1 text-[10px]", toneClasses)}>
       {children}
     </span>
   );
@@ -49,7 +49,7 @@ export function Card({
   children: React.ReactNode;
 }) {
   return (
-    <div className={cn("rounded-2xl border border-border-card bg-card shadow-soft", className)}>
+    <div className={cn("rounded-[28px] bg-card shadow-soft", className)}>
       {children}
     </div>
   );
@@ -65,7 +65,7 @@ export function Stepper({
   max?: number;
 }) {
   return (
-    <div className="flex items-center gap-3 rounded-lg border border-border-input px-1">
+    <div className="flex items-center gap-3 rounded-full border border-border-input px-1.5">
       <button
         type="button"
         aria-label="Decrease quantity"
@@ -75,7 +75,7 @@ export function Stepper({
       >
         −
       </button>
-      <span className="w-4 text-center text-[15px]">{qty}</span>
+      <span className="w-4 text-center text-base">{qty}</span>
       <button
         type="button"
         aria-label="Increase quantity"
@@ -105,8 +105,8 @@ export function RadioCard({
       type="button"
       onClick={onSelect}
       className={cn(
-        "flex w-full items-start gap-3 rounded-xl border px-4 py-3.5 text-left transition-all duration-150",
-        selected ? "border-accent bg-accent-tile/40 shadow-soft" : "border-border-card bg-card"
+        "flex w-full items-start gap-3 rounded-[20px] px-4 py-3.5 text-left transition-all duration-150",
+        selected ? "bg-accent-tile shadow-soft ring-2 ring-accent" : "bg-card shadow-pill"
       )}
     >
       <span
@@ -118,7 +118,7 @@ export function RadioCard({
         {selected && <span className="h-2 w-2 rounded-full bg-accent" />}
       </span>
       <span>
-        <span className="block text-[15px]">{title}</span>
+        <span className="block text-base">{title}</span>
         <span className="label-mono block text-[11px] text-text-label">{subtitle}</span>
       </span>
     </button>
@@ -135,15 +135,15 @@ export function Segmented<T extends string>({
   onChange: (value: T) => void;
 }) {
   return (
-    <div className="flex rounded-xl border border-border-input bg-bg p-1">
+    <div className="flex rounded-full border border-border-input bg-bg p-1">
       {options.map((opt) => (
         <button
           key={opt.value}
           type="button"
           onClick={() => onChange(opt.value)}
           className={cn(
-            "label-mono flex-1 rounded-lg py-2.5 text-[11px] transition-all duration-150",
-            value === opt.value ? "bg-accent text-white shadow-soft" : "text-text-secondary"
+            "label-mono flex-1 rounded-full py-2.5 text-[11px] transition-all duration-150",
+            value === opt.value ? "bg-accent text-white shadow-accent" : "text-text-secondary"
           )}
         >
           {opt.label}
@@ -163,7 +163,7 @@ export function DashedPanel({
   return (
     <div
       className={cn(
-        "rounded-xl border border-dashed border-border-strong bg-accent-tile/30 p-4",
+        "rounded-[20px] bg-accent-tile p-4",
         className
       )}
     >

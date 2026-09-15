@@ -22,13 +22,13 @@ export function WelcomeClient() {
       <div className="flex w-full max-w-xs flex-col gap-3">
         <Link
           href={`/signup?next=${encodeURIComponent(next)}`}
-          className="flex h-12 items-center justify-center rounded-xl bg-accent text-[15px] text-white shadow-soft transition-colors hover:bg-accent-text"
+          className="flex h-12 items-center justify-center rounded-full bg-accent text-[15px] text-white shadow-accent transition-colors hover:bg-accent-hover"
         >
           Join with uni email
         </Link>
         <Link
           href={`/signup?mode=login&next=${encodeURIComponent(next)}`}
-          className="flex h-12 items-center justify-center rounded-xl border border-border-strong text-[15px] text-text-primary"
+          className="flex h-12 items-center justify-center rounded-full border border-border-strong text-[15px] text-text-primary"
         >
           I already have an account
         </Link>

@@ -55,13 +55,13 @@ function CartContent() {
               <p className="label-mono mb-2.5 text-[11px] text-text-label">
                 SOLD BY {seller?.name.toUpperCase()}
               </p>
-              <div className="flex flex-col divide-y divide-border-hairline rounded-xl border border-border-card bg-card shadow-soft">
+              <div className="flex flex-col divide-y divide-border-hairline rounded-[28px] bg-card shadow-soft">
                 {group.lines.map((line) => {
                   const listing = getListing(line.listingId);
                   if (!listing) return null;
                   return (
                     <div key={line.listingId} className="flex items-center gap-3 p-3.5">
-                      <div className="img-placeholder h-14 w-14 shrink-0 rounded-lg border border-border-card" />
+                      <div className="img-placeholder h-14 w-14 shrink-0 rounded-xl" />
                       <div className="min-w-0 flex-1">
                         <p className="truncate text-[15px]">{listing.title}</p>
                         <p className="mt-0.5 text-accent-text">₹{listing.price}</p>
@@ -82,7 +82,7 @@ function CartContent() {
           );
         })}
 
-        <div className="rounded-xl border border-dashed border-border-strong bg-surface p-3.5">
+        <div className="rounded-[20px] bg-accent-tile p-3.5">
           {discount > 0 ? (
             <p className="text-sm text-accent-text">Student code applied −₹{discount}</p>
           ) : (
@@ -91,11 +91,11 @@ function CartContent() {
                 value={promoInput}
                 onChange={(e) => setPromoInput(e.target.value)}
                 placeholder="Promo code (try STUDENT50)"
-                className="h-10 flex-1 rounded-lg border border-border-input bg-bg px-3 text-sm outline-none focus:border-accent"
+                className="h-10 flex-1 rounded-full border border-border-input bg-white px-4 text-sm outline-none focus:border-accent"
               />
               <button
                 onClick={() => applyPromoCode(promoInput.trim().toUpperCase())}
-                className="label-mono rounded-lg border border-border-strong px-3 text-[11px]"
+                className="label-mono rounded-full border border-border-strong bg-white px-4 text-[11px]"
               >
                 APPLY
               </button>
@@ -103,7 +103,7 @@ function CartContent() {
           )}
         </div>
 
-        <div className="flex flex-col gap-2 rounded-xl border border-border-card bg-card shadow-soft p-4">
+        <div className="flex flex-col gap-2 rounded-[28px] bg-card shadow-soft p-4">
           <div className="flex justify-between text-sm text-text-secondary">
             <span>Subtotal</span>
             <span>₹{subtotal}</span>

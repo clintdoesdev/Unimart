@@ -30,7 +30,7 @@ export function BottomTabBar() {
               href={tab.href}
               className="flex flex-1 items-center justify-center"
             >
-              <span className="-mt-6 flex h-[52px] w-[52px] items-center justify-center rounded-full bg-accent text-white shadow-elevated ring-4 ring-white">
+              <span className="-mt-6 flex h-[52px] w-[52px] items-center justify-center rounded-full bg-accent text-white shadow-accent ring-4 ring-white">
                 <Icon size={22} />
               </span>
             </Link>

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Bell, Heart, Search } from "lucide-react";
+import { ArrowRight, Bell, Heart } from "lucide-react";
 import { useState } from "react";
 import { Avatar } from "@/components/ui/Avatar";
 import { useCartStore } from "@/store/cart";
@@ -24,21 +24,25 @@ export function TopBar() {
   }
 
   return (
-    <header className="sticky top-0 z-30 hidden h-16 items-center gap-6 border-b border-border-hairline bg-white px-6 shadow-soft lg:flex">
-      <Link href="/home" className="shrink-0 text-xl font-bold text-accent-text">
+    <header className="shadow-pill sticky top-0 z-30 hidden h-16 items-center gap-6 bg-white px-6 lg:flex">
+      <Link href="/home" className="shrink-0 text-xl font-semibold tracking-tight text-accent">
         Uni Mart
       </Link>
 
-      <form onSubmit={submitSearch} className="flex-1 max-w-md">
-        <div className="flex h-10 items-center gap-2 rounded-lg border border-border-input bg-bg px-3">
-          <Search size={16} className="text-text-faint" />
-          <input
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search listings, categories..."
-            className="w-full bg-transparent text-sm outline-none placeholder:text-text-faint"
-          />
-        </div>
+      <form onSubmit={submitSearch} className="relative max-w-md flex-1">
+        <input
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="What are you shopping for today?"
+          className="h-12 w-full rounded-full border border-border-input bg-white py-1 pl-5 pr-14 text-sm text-text-primary outline-none placeholder:text-text-secondary"
+        />
+        <button
+          type="submit"
+          aria-label="Search"
+          className="absolute right-1 top-1 flex h-10 w-10 items-center justify-center rounded-full bg-accent text-white shadow-accent transition-colors hover:bg-accent-hover"
+        >
+          <ArrowRight size={16} />
+        </button>
       </form>
 
       <nav className="label-mono flex items-center gap-5 text-[11px] text-text-secondary">
@@ -71,7 +75,7 @@ export function TopBar() {
         </Link>
         <Link
           href="/sell"
-          className="label-mono rounded-lg bg-accent px-3.5 py-2 text-[11px] text-white shadow-soft hover:bg-accent-text"
+          className="label-mono rounded-full bg-accent px-4 py-2.5 text-[11px] text-white shadow-accent hover:bg-accent-hover"
         >
           + SELL
         </Link>

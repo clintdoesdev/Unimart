@@ -70,7 +70,7 @@ export function VerifyClient() {
               onKeyDown={(e) => handleKeyDown(i, e)}
               maxLength={1}
               inputMode="text"
-              className="h-14 w-12 rounded-xl border border-border-input bg-surface text-center text-xl uppercase outline-none focus:border-accent"
+              className="h-14 w-12 rounded-full border border-border-input bg-surface text-center text-xl uppercase outline-none focus:border-accent"
             />
           ))}
         </div>

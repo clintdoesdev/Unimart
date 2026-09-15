@@ -40,7 +40,7 @@ function ProfileContent() {
         </div>
       </div>
 
-      <div className="flex flex-col divide-y divide-border-hairline border-t border-border-hairline lg:mx-auto lg:w-full lg:max-w-md lg:rounded-xl lg:border lg:border-border-card">
+      <div className="flex flex-col divide-y divide-border-hairline border-t border-border-hairline lg:mx-auto lg:w-full lg:max-w-md lg:rounded-[28px] lg:border-0 lg:bg-card lg:shadow-soft">
         {NAV.map((item) => (
           <Link key={item.href} href={item.href} className="flex items-center gap-3 px-5 py-4 hover:bg-surface">
             <item.icon size={18} className="text-text-tertiary" />

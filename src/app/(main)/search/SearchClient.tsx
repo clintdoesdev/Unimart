@@ -65,7 +65,7 @@ export function SearchClient() {
             setCategory(e.target.value);
             setPage(1);
           }}
-          className="h-10 w-full rounded-lg border border-border-input bg-surface px-3 text-sm outline-none focus:border-accent"
+          className="h-10 w-full rounded-full border border-border-input bg-surface px-3 text-sm outline-none focus:border-accent"
         >
           <option value="">All categories</option>
           {CATEGORIES.map((c) => (
@@ -144,7 +144,7 @@ export function SearchClient() {
           type="button"
           onClick={() => router.back()}
           aria-label="Back"
-          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-text-secondary"
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-text-secondary"
         >
           <ChevronLeft size={20} />
         </button>
@@ -153,7 +153,7 @@ export function SearchClient() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search..."
-            className="h-10 w-full rounded-lg border border-border-input bg-surface px-3 text-[15px] outline-none focus:border-accent"
+            className="h-11 w-full rounded-full border border-border-input bg-surface px-4 text-base outline-none focus:border-accent"
           />
         </form>
       </header>
@@ -161,7 +161,7 @@ export function SearchClient() {
       <div className="lg:grid lg:grid-cols-[210px_1fr] lg:gap-8 lg:px-6 lg:py-6">
         {/* Desktop filter rail */}
         <aside className="hidden lg:block">
-          <form onSubmit={submitQuery} className="mb-6 flex h-10 items-center gap-2 rounded-lg border border-border-input bg-surface px-3">
+          <form onSubmit={submitQuery} className="mb-6 flex h-11 items-center gap-2 rounded-full border border-border-input bg-surface px-4">
             <SearchIcon size={16} className="text-text-faint" />
             <input
               value={query}
@@ -186,7 +186,7 @@ export function SearchClient() {
               <button
                 type="button"
                 onClick={() => setSheetOpen(true)}
-                className="label-mono flex items-center gap-1.5 rounded-lg border border-border-input px-3 py-2 text-[11px] text-text-secondary lg:hidden"
+                className="label-mono flex items-center gap-1.5 rounded-full border border-border-input px-3 py-2 text-[11px] text-text-secondary lg:hidden"
               >
                 <Filter size={13} />
                 Filters {activeFilterCount > 0 && `(${activeFilterCount})`}
@@ -194,14 +194,14 @@ export function SearchClient() {
               <div className="hidden items-center gap-1 lg:flex">
                 <button
                   onClick={() => setView("list")}
-                  className={cn("rounded-lg p-2", view === "list" ? "bg-accent text-white" : "text-text-tertiary")}
+                  className={cn("rounded-full p-2", view === "list" ? "bg-accent text-white" : "text-text-tertiary")}
                   aria-label="List view"
                 >
                   <List size={16} />
                 </button>
                 <button
                   onClick={() => setView("grid")}
-                  className={cn("rounded-lg p-2", view === "grid" ? "bg-accent text-white" : "text-text-tertiary")}
+                  className={cn("rounded-full p-2", view === "grid" ? "bg-accent text-white" : "text-text-tertiary")}
                   aria-label="Grid view"
                 >
                   <Grid2x2 size={16} />
@@ -234,7 +234,7 @@ export function SearchClient() {
                     href={`/listing/${listing.id}`}
                     className="flex items-center gap-3 py-3.5 hover:bg-surface"
                   >
-                    <div className="img-placeholder h-16 w-16 shrink-0 rounded-lg border border-border-card lg:h-[76px] lg:w-24" />
+                    <div className="img-placeholder h-16 w-16 shrink-0 rounded-xl lg:h-[76px] lg:w-24" />
                     <div className="min-w-0 flex-1">
                       <p className="truncate text-[15px]">{listing.title}</p>
                       <p className="label-mono mt-0.5 truncate text-[10px] text-text-label">
@@ -271,7 +271,7 @@ export function SearchClient() {
       {sheetOpen && (
         <div className="fixed inset-0 z-50 flex items-end lg:hidden">
           <div className="absolute inset-0 bg-black/50" onClick={() => setSheetOpen(false)} />
-          <div className="relative z-10 max-h-[85vh] w-full overflow-y-auto rounded-t-2xl border-t border-border-card bg-white p-5 shadow-elevated transition-transform duration-200 ease-out">
+          <div className="relative z-10 max-h-[85vh] w-full overflow-y-auto rounded-t-[28px] bg-white p-5 shadow-elevated transition-transform duration-200 ease-out">
             <div className="mx-auto mb-4 h-1 w-10 rounded-full bg-border-strong" />
             <div className="mb-4 flex items-center justify-between">
               <p className="text-lg">Filters</p>

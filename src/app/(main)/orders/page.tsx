@@ -56,7 +56,7 @@ function OrdersContent() {
           />
         ) : (
           orders.map((order) => (
-            <div key={order.id} className="rounded-xl border border-border-card bg-card shadow-soft p-4">
+            <div key={order.id} className="rounded-[28px] bg-card shadow-soft p-4">
               <div className="flex items-center justify-between">
                 <p className="label-mono text-[11px] text-text-label">{order.id}</p>
                 <Badge tone={order.status === "completed" ? "muted" : "accent"}>
@@ -64,7 +64,7 @@ function OrdersContent() {
                 </Badge>
               </div>
               <div className="mt-3 flex items-center gap-3">
-                <div className="img-placeholder h-12 w-12 shrink-0 rounded-lg border border-border-card" />
+                <div className="img-placeholder h-12 w-12 shrink-0 rounded-xl" />
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-[15px]">{order.items[0]?.title}</p>
                   <p className="label-mono text-[10px] text-text-label">₹{order.total} · {order.createdAt}</p>
@@ -74,21 +74,21 @@ function OrdersContent() {
                 {order.status === "ready-for-pickup" || order.status === "paid" ? (
                   <Link
                     href={`/orders/${order.id}`}
-                    className="label-mono inline-flex h-9 items-center rounded-lg border border-border-strong px-3.5 text-[11px]"
+                    className="label-mono inline-flex h-9 items-center rounded-full border border-border-strong px-3.5 text-[11px]"
                   >
                     SHOW PICKUP CODE
                   </Link>
                 ) : order.status === "completed" && !order.reviewed && tab === "buying" ? (
                   <Link
                     href={`/rate/${order.id}`}
-                    className="label-mono inline-flex h-9 items-center rounded-lg bg-accent px-3.5 text-[11px] text-white"
+                    className="label-mono inline-flex h-9 items-center rounded-full bg-accent px-3.5 text-[11px] text-white"
                   >
                     RATE SELLER
                   </Link>
                 ) : (
                   <Link
                     href={`/orders/${order.id}`}
-                    className="label-mono inline-flex h-9 items-center rounded-lg border border-border-strong px-3.5 text-[11px]"
+                    className="label-mono inline-flex h-9 items-center rounded-full border border-border-strong px-3.5 text-[11px]"
                   >
                     VIEW ORDER
                   </Link>
