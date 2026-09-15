@@ -21,10 +21,10 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Forbidden." }, { status: 403 });
   }
 
-  const existing = await db.user.count();
+  const existing = await db.listing.count();
   if (existing > 0) {
     return NextResponse.json(
-      { error: "Database already has users — refusing to reseed.", userCount: existing },
+      { error: "Demo data already exists — refusing to reseed.", listingCount: existing },
       { status: 409 }
     );
   }
