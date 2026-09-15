@@ -1,28 +1,40 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { MobileHeader } from "@/components/nav/MobileHeader";
 import { Chip } from "@/components/ui/Chip";
 import { Button } from "@/components/ui/Button";
 import { ProgressBar } from "@/components/ui/misc";
-import { INTEREST_OPTIONS } from "@/lib/mock-data";
 import { useSessionStore } from "@/store/session";
+import { apiGet } from "@/lib/api";
+import type { Category } from "@/lib/types";
 
 export function InterestsClient() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const next = searchParams.get("next") ?? "/home";
   const setInterests = useSessionStore((s) => s.setInterests);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [selected, setSelected] = useState<string[]>([]);
+  const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    apiGet<{ categories: Category[] }>("/api/categories").then((r) => setCategories(r.categories));
+  }, []);
 
   function toggle(id: string) {
     setSelected((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
   }
 
-  function continueOnboarding() {
-    setInterests(selected);
-    router.push(next);
+  async function continueOnboarding() {
+    setSubmitting(true);
+    try {
+      await setInterests(selected);
+      router.push(next);
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
@@ -37,9 +49,9 @@ export function InterestsClient() {
         </div>
 
         <div className="flex flex-wrap gap-2.5">
-          {INTEREST_OPTIONS.map((opt) => (
+          {categories.map((opt) => (
             <Chip key={opt.id} active={selected.includes(opt.id)} onClick={() => toggle(opt.id)} className="px-4 py-2.5">
-              {opt.label}
+              {opt.name}
             </Chip>
           ))}
         </div>
@@ -47,7 +59,7 @@ export function InterestsClient() {
         <Button
           size="lg"
           fullWidth
-          disabled={selected.length < 3}
+          disabled={selected.length < 3 || submitting}
           onClick={continueOnboarding}
           className="mt-auto"
         >

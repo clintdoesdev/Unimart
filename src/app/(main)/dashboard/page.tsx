@@ -1,40 +1,52 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { MoreHorizontal } from "lucide-react";
 import { AuthGate } from "@/components/AuthGate";
 import { MobileHeader } from "@/components/nav/MobileHeader";
 import { StatTile, Badge } from "@/components/ui/misc";
-import { useSellingStore } from "@/store/selling";
-import { useOrdersStore } from "@/store/orders";
+import { apiGet, apiPatch } from "@/lib/api";
 import { cn } from "@/lib/cn";
-import type { Listing } from "@/lib/types";
+import type { Listing, ListingStatus, OrderSummary } from "@/lib/types";
 
 const NAV_ITEMS = ["Overview", "Listings", "Orders", "Messages", "Payouts", "Reviews"];
 const CHART = [3, 5, 2, 6, 4, 7, 9];
 
-const STATUS_META: Record<Listing["status"], { label: string; tone: "accent" | "muted" }> = {
-  live: { label: "LIVE", tone: "accent" },
-  draft: { label: "DRAFT", tone: "muted" },
-  sold: { label: "SOLD", tone: "muted" },
+const STATUS_META: Record<ListingStatus, { label: string; tone: "accent" | "muted" }> = {
+  LIVE: { label: "LIVE", tone: "accent" },
+  DRAFT: { label: "DRAFT", tone: "muted" },
+  SOLD: { label: "SOLD", tone: "muted" },
 };
 
 function DashboardContent() {
-  const myListings = useSellingStore((s) => s.myListings);
-  const setListingStatus = useSellingStore((s) => s.setListingStatus);
-  const allOrders = useOrdersStore((s) => s.orders);
-  const orders = allOrders.filter((o) => o.role === "selling");
+  const [myListings, setMyListings] = useState<Listing[]>([]);
+  const [orders, setOrders] = useState<OrderSummary[]>([]);
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
   const [nav, setNav] = useState("Overview");
 
+  function loadListings() {
+    apiGet<{ listings: Listing[] }>("/api/listings/mine").then((r) => setMyListings(r.listings));
+  }
+
+  useEffect(() => {
+    loadListings();
+    apiGet<{ orders: OrderSummary[] }>("/api/orders?role=selling").then((r) => setOrders(r.orders));
+  }, []);
+
   const earned = useMemo(
-    () => orders.filter((o) => o.status === "completed").reduce((sum, o) => sum + o.total, 0),
+    () => orders.filter((o) => o.status === "COMPLETED").reduce((sum, o) => sum + o.total, 0),
     [orders]
   );
-  const active = myListings.filter((l) => l.status === "live").length;
+  const active = myListings.filter((l) => l.status === "LIVE").length;
   const views = myListings.reduce((sum, l) => sum + l.views, 0);
-  const sales = orders.filter((o) => o.status === "completed").length;
+  const sales = orders.filter((o) => o.status === "COMPLETED").length;
+
+  async function setListingStatus(id: string, status: ListingStatus) {
+    await apiPatch(`/api/listings/${id}`, { status });
+    loadListings();
+    setOpenMenuId(null);
+  }
 
   return (
     <div className="flex flex-1 flex-col">
@@ -104,9 +116,9 @@ function DashboardContent() {
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-[15px]">{listing.title}</p>
                   <p className="label-mono mt-0.5 text-[10px] text-text-label">
-                    {listing.status === "sold"
+                    {listing.status === "SOLD"
                       ? `SOLD ₹${listing.price}`
-                      : listing.status === "draft"
+                      : listing.status === "DRAFT"
                         ? "DRAFT"
                         : `LIVE · ${listing.saves} SAVES`}
                   </p>
@@ -117,23 +129,17 @@ function DashboardContent() {
                   </button>
                   {openMenuId === listing.id && (
                     <div className="absolute right-0 top-8 z-10 w-40 rounded-2xl border border-border-card bg-surface py-1 shadow-elevated">
-                      {listing.status !== "sold" && (
+                      {listing.status !== "SOLD" && (
                         <button
-                          onClick={() => {
-                            setListingStatus(listing.id, "sold");
-                            setOpenMenuId(null);
-                          }}
+                          onClick={() => setListingStatus(listing.id, "SOLD")}
                           className="block w-full px-3 py-2 text-left text-sm text-text-secondary hover:bg-placeholder-secondary"
                         >
                           Mark as sold
                         </button>
                       )}
-                      {listing.status === "draft" && (
+                      {listing.status === "DRAFT" && (
                         <button
-                          onClick={() => {
-                            setListingStatus(listing.id, "live");
-                            setOpenMenuId(null);
-                          }}
+                          onClick={() => setListingStatus(listing.id, "LIVE")}
                           className="block w-full px-3 py-2 text-left text-sm text-text-secondary hover:bg-placeholder-secondary"
                         >
                           Publish
@@ -177,12 +183,9 @@ function DashboardContent() {
                         </button>
                         {openMenuId === listing.id && (
                           <div className="absolute right-0 top-7 z-10 w-40 rounded-2xl border border-border-card bg-surface py-1 text-left shadow-elevated">
-                            {listing.status !== "sold" && (
+                            {listing.status !== "SOLD" && (
                               <button
-                                onClick={() => {
-                                  setListingStatus(listing.id, "sold");
-                                  setOpenMenuId(null);
-                                }}
+                                onClick={() => setListingStatus(listing.id, "SOLD")}
                                 className="block w-full px-3 py-2 text-left text-sm text-text-secondary hover:bg-placeholder-secondary"
                               >
                                 Mark as sold

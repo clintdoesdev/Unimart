@@ -6,69 +6,70 @@ import { AuthGate } from "@/components/AuthGate";
 import { MobileHeader } from "@/components/nav/MobileHeader";
 import { RadioCard, Segmented } from "@/components/ui/misc";
 import { Button } from "@/components/ui/Button";
-import { getListing, getSeller } from "@/lib/mock-data";
-import type { HandoverMethod } from "@/lib/types";
-import { HANDOVER_COST, cartGroupSubtotal, useCartStore } from "@/store/cart";
-import { useOrdersStore } from "@/store/orders";
+import { apiGet, apiPost } from "@/lib/api";
+import type { CartGroup, HandoverMethod } from "@/lib/types";
+import { useCheckoutStore } from "@/store/checkout";
+import { useBadgeStore } from "@/store/badges";
 
 const HANDOVER_OPTIONS: { value: HandoverMethod; title: string; subtitle: string }[] = [
-  { value: "locker", title: "Campus pickup point", subtitle: "Library lockers · Free" },
-  { value: "meet", title: "Meet the seller", subtitle: "Arrange in chat · Free" },
-  { value: "deliver", title: "Hostel delivery", subtitle: "₹30 · Same day" },
+  { value: "LOCKER", title: "Campus pickup point", subtitle: "Library lockers · Free" },
+  { value: "MEET", title: "Meet the seller", subtitle: "Arrange in chat · Free" },
+  { value: "DELIVER", title: "Hostel delivery", subtitle: "₹30 · Same day" },
 ];
+const HANDOVER_COST = { LOCKER: 0, MEET: 0, DELIVER: 30 } as const;
 
 const PROMO_CODE = "STUDENT50";
 const PROMO_DISCOUNT = 50;
 
 function CheckoutContent() {
   const router = useRouter();
-  const groups = useCartStore((s) => s.groups);
-  const promoCode = useCartStore((s) => s.promoCode);
-  const setHandoverForSeller = useCartStore((s) => s.setHandoverForSeller);
-  const clearCart = useCartStore((s) => s.clearCart);
-  const placeOrder = useOrdersStore((s) => s.placeOrder);
+  const [groups, setGroups] = useState<CartGroup[] | null>(null);
   const [payment, setPayment] = useState<"upi" | "card" | "wallet">("upi");
   const [placing, setPlacing] = useState(false);
+  const promoCode = useCheckoutStore((s) => s.promoCode);
+  const handoverBySeller = useCheckoutStore((s) => s.handoverBySeller);
+  const setHandover = useCheckoutStore((s) => s.setHandover);
+  const resetCheckout = useCheckoutStore((s) => s.reset);
+  const refreshCart = useBadgeStore((s) => s.refreshCart);
 
-  const subtotal = groups.reduce((sum, g) => sum + cartGroupSubtotal(g), 0);
-  const handoverTotal = groups.reduce((sum, g) => sum + HANDOVER_COST[g.handoverMethod], 0);
+  useEffect(() => {
+    apiGet<{ groups: CartGroup[] }>("/api/cart").then((r) => {
+      setGroups(r.groups);
+      if (r.groups.length === 0) router.replace("/cart");
+    });
+  }, [router]);
+
+  if (!groups) {
+    return (
+      <div className="flex flex-1 flex-col">
+        <MobileHeader title="Checkout" />
+      </div>
+    );
+  }
+  if (groups.length === 0) return null;
+
+  const subtotal = groups.reduce((sum, g) => sum + g.lines.reduce((s, l) => s + l.price * l.qty, 0), 0);
+  const handoverTotal = groups.reduce((sum, g) => sum + HANDOVER_COST[handoverBySeller[g.sellerId] ?? "LOCKER"], 0);
   const discount = promoCode === PROMO_CODE ? PROMO_DISCOUNT : 0;
   const total = Math.max(0, subtotal + handoverTotal - discount);
 
-  useEffect(() => {
-    if (!placing && groups.length === 0) {
-      router.replace("/cart");
-    }
-  }, [placing, groups.length, router]);
-
-  if (groups.length === 0) {
-    return null;
-  }
-
-  function placeOrderNow() {
+  async function placeOrderNow() {
     setPlacing(true);
-    let firstOrderId = "";
-    groups.forEach((group, i) => {
-      const items = group.lines
-        .map((line) => {
-          const listing = getListing(line.listingId);
-          return listing ? { listingId: listing.id, title: listing.title, price: listing.price, qty: line.qty } : null;
-        })
-        .filter(Boolean) as { listingId: string; title: string; price: number; qty: number }[];
-      const groupSubtotal = cartGroupSubtotal(group);
-      const order = placeOrder({
-        sellerId: group.sellerId,
-        items,
-        subtotal: groupSubtotal,
-        handoverCost: HANDOVER_COST[group.handoverMethod],
-        discount: i === 0 ? discount : 0,
-        total: groupSubtotal + HANDOVER_COST[group.handoverMethod] - (i === 0 ? discount : 0),
-        handoverMethod: group.handoverMethod,
+    try {
+      const map: Record<string, HandoverMethod> = {};
+      groups!.forEach((g) => {
+        map[g.sellerId] = handoverBySeller[g.sellerId] ?? "LOCKER";
       });
-      if (i === 0) firstOrderId = order.id;
-    });
-    clearCart();
-    router.push(`/order-confirmed/${firstOrderId}`);
+      const { orders } = await apiPost<{ orders: { id: string; orderNumber: string }[] }>("/api/orders", {
+        handoverBySeller: map,
+        promoCode: promoCode ?? undefined,
+      });
+      resetCheckout();
+      refreshCart();
+      router.push(`/order-confirmed/${orders[0].id}`);
+    } finally {
+      setPlacing(false);
+    }
   }
 
   return (
@@ -80,33 +81,30 @@ function CheckoutContent() {
           <div className="label-mono hidden items-center gap-3 text-[11px] text-text-label lg:flex">
             <span className="text-text-faint">CART</span>
             <span>→</span>
-            <span className="text-accent-text">HANDOVER</span>
+            <span className="text-accent">HANDOVER</span>
             <span>→</span>
-            <span className="text-accent-text">PAY</span>
+            <span className="text-accent">PAY</span>
           </div>
 
           <div>
             <p className="label-mono mb-3 text-[11px] text-text-label">HANDOVER</p>
             <div className="flex flex-col gap-5">
-              {groups.map((group) => {
-                const seller = getSeller(group.sellerId);
-                return (
-                  <div key={group.sellerId}>
-                    <p className="mb-2 text-sm text-text-tertiary">Sold by {seller?.name}</p>
-                    <div className="flex flex-col gap-2.5">
-                      {HANDOVER_OPTIONS.map((opt) => (
-                        <RadioCard
-                          key={opt.value}
-                          selected={group.handoverMethod === opt.value}
-                          title={opt.title}
-                          subtitle={opt.subtitle}
-                          onSelect={() => setHandoverForSeller(group.sellerId, opt.value)}
-                        />
-                      ))}
-                    </div>
+              {groups.map((group) => (
+                <div key={group.sellerId}>
+                  <p className="mb-2 text-sm text-text-tertiary">Sold by {group.seller.name}</p>
+                  <div className="flex flex-col gap-2.5">
+                    {HANDOVER_OPTIONS.map((opt) => (
+                      <RadioCard
+                        key={opt.value}
+                        selected={(handoverBySeller[group.sellerId] ?? "LOCKER") === opt.value}
+                        title={opt.title}
+                        subtitle={opt.subtitle}
+                        onSelect={() => setHandover(group.sellerId, opt.value)}
+                      />
+                    ))}
                   </div>
-                );
-              })}
+                </div>
+              ))}
             </div>
           </div>
 
@@ -121,9 +119,6 @@ function CheckoutContent() {
                 { value: "wallet", label: "Wallet" },
               ]}
             />
-            {payment === "wallet" && (
-              <p className="mt-2 text-sm text-text-tertiary">Wallet balance: ₹720</p>
-            )}
           </div>
         </div>
 
@@ -139,7 +134,7 @@ function CheckoutContent() {
               <span>{handoverTotal === 0 ? "Free" : `₹${handoverTotal}`}</span>
             </div>
             {discount > 0 && (
-              <div className="flex justify-between text-sm text-accent-text">
+              <div className="flex justify-between text-sm text-accent">
                 <span>Student code</span>
                 <span>−₹{discount}</span>
               </div>

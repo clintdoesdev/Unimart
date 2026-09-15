@@ -5,17 +5,15 @@ import { useRouter } from "next/navigation";
 import { ArrowRight, Bell, Heart } from "lucide-react";
 import { useState } from "react";
 import { Avatar } from "@/components/ui/Avatar";
-import { useCartStore } from "@/store/cart";
-import { useChatStore } from "@/store/chat";
+import { useBadgeStore } from "@/store/badges";
 import { useSessionStore } from "@/store/session";
-import { useNotificationsStore } from "@/store/notifications";
 
 export function TopBar() {
   const router = useRouter();
   const [query, setQuery] = useState("");
-  const cartCount = useCartStore((s) => s.totalItemCount());
-  const unread = useChatStore((s) => s.totalUnread());
-  const unreadNotifs = useNotificationsStore((s) => s.unreadCount());
+  const cartCount = useBadgeStore((s) => s.cartCount);
+  const unread = useBadgeStore((s) => s.unreadChats);
+  const unreadNotifs = useBadgeStore((s) => s.unreadNotifications);
   const profile = useSessionStore((s) => s.profile);
 
   function submitSearch(e: React.FormEvent) {

@@ -1,17 +1,35 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
-import { Heart } from "lucide-react";
+import { Heart, BadgeCheck } from "lucide-react";
 import type { Listing } from "@/lib/types";
 import { ImagePlaceholder } from "@/components/ui/ImagePlaceholder";
-import { useSavedStore } from "@/store/saved";
+import { apiPost } from "@/lib/api";
 import { useAuthGuard } from "@/lib/auth";
 import { cn } from "@/lib/cn";
 
-export function ProductCard({ listing }: { listing: Listing }) {
-  const saved = useSavedStore((s) => s.isSaved(listing.id));
-  const toggle = useSavedStore((s) => s.toggle);
+export function ProductCard({
+  listing,
+  onToggleSaved,
+}: {
+  listing: Listing;
+  onToggleSaved?: (saved: boolean) => void;
+}) {
+  const [saved, setSaved] = useState(!!listing.saved);
   const { requireAuth } = useAuthGuard();
+
+  async function toggleSaved() {
+    const next = !saved;
+    setSaved(next);
+    onToggleSaved?.(next);
+    try {
+      const res = await apiPost<{ saved: boolean }>(`/api/saved/${listing.id}`);
+      setSaved(res.saved);
+    } catch {
+      setSaved(!next);
+    }
+  }
 
   return (
     <Link
@@ -24,13 +42,19 @@ export function ProductCard({ listing }: { listing: Listing }) {
           type="button"
           onClick={(e) => {
             e.preventDefault();
-            requireAuth(`/listing/${listing.id}`, () => toggle(listing.id));
+            requireAuth(`/listing/${listing.id}`, toggleSaved);
           }}
           aria-label="Save listing"
           className="absolute right-2 top-2 flex h-9 w-9 items-center justify-center rounded-full bg-white/90 shadow-pill backdrop-blur"
         >
           <Heart size={16} className={cn(saved ? "fill-accent text-accent" : "text-text-secondary")} />
         </button>
+        {listing.seller.vendor && (
+          <span className="label-mono absolute left-2 top-2 flex items-center gap-1 rounded-full bg-white/90 px-2 py-1 text-[9px] text-accent shadow-pill">
+            <BadgeCheck size={11} />
+            VENDOR
+          </span>
+        )}
       </div>
       <div className="px-1.5 pb-2">
         <p className="truncate text-sm font-semibold tracking-tight text-text-primary">{listing.title}</p>

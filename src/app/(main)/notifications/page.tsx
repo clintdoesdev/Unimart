@@ -1,19 +1,39 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { Bell } from "lucide-react";
 import { AuthGate } from "@/components/AuthGate";
 import { MobileHeader } from "@/components/nav/MobileHeader";
 import { EmptyState } from "@/components/ui/EmptyState";
-import { useNotificationsStore } from "@/store/notifications";
+import { apiGet, apiPost } from "@/lib/api";
+import type { NotificationItem } from "@/lib/types";
+import { useBadgeStore } from "@/store/badges";
 import { cn } from "@/lib/cn";
 
 function NotificationsContent() {
-  const items = useNotificationsStore((s) => s.items);
-  const markAllRead = useNotificationsStore((s) => s.markAllRead);
-  const markRead = useNotificationsStore((s) => s.markRead);
+  const [items, setItems] = useState<NotificationItem[]>([]);
+  const refreshNotifications = useBadgeStore((s) => s.refreshNotifications);
+
+  function load() {
+    apiGet<{ items: NotificationItem[] }>("/api/notifications").then((r) => setItems(r.items));
+  }
+
+  useEffect(load, []);
 
   const today = items.filter((n) => n.group === "today");
   const earlier = items.filter((n) => n.group === "earlier");
+
+  async function markAllRead() {
+    await apiPost("/api/notifications/read-all");
+    load();
+    refreshNotifications();
+  }
+
+  async function markRead(id: string) {
+    await apiPost(`/api/notifications/${id}/read`);
+    load();
+    refreshNotifications();
+  }
 
   return (
     <div className="flex flex-1 flex-col">
@@ -72,7 +92,7 @@ function NotificationRow({
       <span className={cn("mt-1.5 h-2 w-2 shrink-0 rounded-full", read ? "bg-text-faint" : "bg-accent")} />
       <div className="min-w-0 flex-1">
         <p className="text-[15px] text-text-primary">{message}</p>
-        <p className="label-mono mt-0.5 text-[10px] text-text-label">{createdAt}</p>
+        <p className="label-mono mt-0.5 text-[10px] text-text-label">{new Date(createdAt).toLocaleString()}</p>
       </div>
     </button>
   );

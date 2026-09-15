@@ -6,8 +6,10 @@ import Link from "next/link";
 import { MobileHeader } from "@/components/nav/MobileHeader";
 import { Input, Label, Select } from "@/components/ui/Field";
 import { Button } from "@/components/ui/Button";
-import { CAMPUSES } from "@/lib/mock-data";
+import { CAMPUSES } from "@/lib/labels";
+import { isUniversityEmail } from "@/lib/university-email";
 import { useSessionStore } from "@/store/session";
+import { ApiError } from "@/lib/api";
 
 export function SignupClient() {
   const router = useRouter();
@@ -15,7 +17,7 @@ export function SignupClient() {
   const next = searchParams.get("next") ?? "/home";
   const isLogin = searchParams.get("mode") === "login";
   const signUp = useSessionStore((s) => s.signUp);
-  const verify = useSessionStore((s) => s.verify);
+  const login = useSessionStore((s) => s.login);
 
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
@@ -23,10 +25,11 @@ export function SignupClient() {
   const [password, setPassword] = useState("");
   const [agree, setAgree] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
 
-  const emailValid = /@[a-z0-9.-]+\.(edu|ac\.in)$/i.test(email) || email.endsWith("university.edu");
+  const emailValid = isUniversityEmail(email);
 
-  function submit(e: React.FormEvent) {
+  async function submit(e: React.FormEvent) {
     e.preventDefault();
     if (!emailValid) {
       setError("Use your university email address (.edu / .ac.in)");
@@ -36,13 +39,28 @@ export function SignupClient() {
       setError("Please agree to the campus trading rules");
       return;
     }
+    if (password.length < 8) {
+      setError("Password must be at least 8 characters");
+      return;
+    }
     setError(null);
-    signUp({ fullName: fullName || "Student", email, campus });
-    if (isLogin) {
-      verify();
-      router.push(next);
-    } else {
-      router.push(`/verify?next=${encodeURIComponent(next)}`);
+    setSubmitting(true);
+    try {
+      if (isLogin) {
+        await login(email, password);
+        router.push(next);
+      } else {
+        await signUp({ fullName: fullName || "Student", email, campus, password });
+        router.push(`/verify?email=${encodeURIComponent(email)}&next=${encodeURIComponent(next)}`);
+      }
+    } catch (err) {
+      if (err instanceof ApiError && err.status === 403) {
+        router.push(`/verify?email=${encodeURIComponent(email)}&next=${encodeURIComponent(next)}`);
+        return;
+      }
+      setError(err instanceof Error ? err.message : "Something went wrong.");
+    } finally {
+      setSubmitting(false);
     }
   }
 
@@ -51,7 +69,7 @@ export function SignupClient() {
       <MobileHeader title={isLogin ? "Log in" : "Sign up"} />
       <form onSubmit={submit} className="flex flex-1 flex-col gap-5 px-5 py-6 lg:mx-auto lg:w-full lg:max-w-sm lg:py-16">
         <div className="hidden lg:block">
-          <h1 className="text-2xl text-accent-text">{isLogin ? "Log in" : "Join Uni Mart"}</h1>
+          <h1 className="text-2xl text-accent">{isLogin ? "Log in" : "Join Uni Mart"}</h1>
         </div>
 
         {!isLogin && (
@@ -105,22 +123,22 @@ export function SignupClient() {
 
         {error && <p className="text-sm text-text-destructive">{error}</p>}
 
-        <Button type="submit" size="lg" fullWidth>
-          {isLogin ? "Log in" : "Send verification code"}
+        <Button type="submit" size="lg" fullWidth disabled={submitting}>
+          {submitting ? "Please wait..." : isLogin ? "Log in" : "Send verification code"}
         </Button>
 
         <p className="text-center text-sm text-text-tertiary">
           {isLogin ? (
             <>
               New here?{" "}
-              <Link href={`/signup?next=${encodeURIComponent(next)}`} className="text-accent-text">
+              <Link href={`/signup?next=${encodeURIComponent(next)}`} className="text-accent">
                 Sign up
               </Link>
             </>
           ) : (
             <>
               Already have an account?{" "}
-              <Link href={`/signup?mode=login&next=${encodeURIComponent(next)}`} className="text-accent-text">
+              <Link href={`/signup?mode=login&next=${encodeURIComponent(next)}`} className="text-accent">
                 Log in
               </Link>
             </>

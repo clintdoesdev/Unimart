@@ -7,42 +7,69 @@ import { ChevronLeft, MessageCircle, Paperclip, Search, Send } from "lucide-reac
 import { Avatar } from "@/components/ui/Avatar";
 import { ImagePlaceholder } from "@/components/ui/ImagePlaceholder";
 import { EmptyState } from "@/components/ui/EmptyState";
-import { useChatStore } from "@/store/chat";
-import { getListing, getSeller } from "@/lib/mock-data";
+import { apiGet, apiPost } from "@/lib/api";
+import type { ConversationDetail, ConversationSummary } from "@/lib/types";
+import { useBadgeStore } from "@/store/badges";
 import { cn } from "@/lib/cn";
 
 export function ChatsView({ activeId }: { activeId?: string }) {
   const router = useRouter();
-  const conversations = useChatStore((s) => s.conversations);
-  const sendMessage = useChatStore((s) => s.sendMessage);
-  const sendOffer = useChatStore((s) => s.sendOffer);
-  const respondToOffer = useChatStore((s) => s.respondToOffer);
-  const markRead = useChatStore((s) => s.markRead);
+  const refreshChats = useBadgeStore((s) => s.refreshChats);
+  const [conversations, setConversations] = useState<ConversationSummary[]>([]);
+  const [details, setDetails] = useState<Record<string, ConversationDetail>>({});
   const [draft, setDraft] = useState("");
   const [query, setQuery] = useState("");
+  const active = activeId ? details[activeId] ?? null : null;
 
-  const active = conversations.find((c) => c.id === activeId);
-
-  useEffect(() => {
-    if (activeId) markRead(activeId);
-  }, [activeId, markRead]);
-
-  const filteredList = conversations
-    .filter((c) => getSeller(c.sellerId)?.name.toLowerCase().includes(query.toLowerCase()))
-    .sort((a, b) => (a.id === activeId ? -1 : b.id === activeId ? 1 : 0));
-
-  function submitMessage(e: React.FormEvent) {
-    e.preventDefault();
-    if (!active || !draft.trim()) return;
-    sendMessage(active.id, draft.trim());
-    setDraft("");
+  function loadList() {
+    apiGet<{ conversations: ConversationSummary[] }>("/api/conversations").then((r) => setConversations(r.conversations));
   }
 
-  function makeOffer() {
+  useEffect(loadList, []);
+
+  useEffect(() => {
+    if (!activeId) return;
+    apiGet<{ conversation: ConversationDetail }>(`/api/conversations/${activeId}`).then((r) => {
+      setDetails((prev) => ({ ...prev, [activeId]: r.conversation }));
+      loadList();
+      refreshChats();
+    });
+  }, [activeId, refreshChats]);
+
+  const filteredList = conversations
+    .filter((c) => c.counterpartName.toLowerCase().includes(query.toLowerCase()))
+    .sort((a, b) => (a.id === activeId ? -1 : b.id === activeId ? 1 : 0));
+
+  async function reloadActive(conversationId: string) {
+    const r = await apiGet<{ conversation: ConversationDetail }>(`/api/conversations/${conversationId}`);
+    setDetails((prev) => ({ ...prev, [conversationId]: r.conversation }));
+  }
+
+  async function submitMessage(e: React.FormEvent) {
+    e.preventDefault();
+    if (!active || !draft.trim()) return;
+    const text = draft.trim();
+    setDraft("");
+    await apiPost(`/api/conversations/${active.id}/messages`, { text });
+    await reloadActive(active.id);
+    loadList();
+  }
+
+  async function makeOffer() {
     if (!active) return;
     const amount = window.prompt("Offer amount (₹)");
     const num = Number(amount);
-    if (num > 0) sendOffer(active.id, num);
+    if (num > 0) {
+      await apiPost(`/api/conversations/${active.id}/messages`, { offerAmount: num });
+      await reloadActive(active.id);
+      loadList();
+    }
+  }
+
+  async function respondToOffer(messageId: string, status: "ACCEPTED" | "DECLINED") {
+    if (!active) return;
+    await apiPost(`/api/conversations/${active.id}/messages/${messageId}/respond`, { status });
+    await reloadActive(active.id);
   }
 
   return (
@@ -64,34 +91,32 @@ export function ChatsView({ activeId }: { activeId?: string }) {
           </div>
         </div>
         <div className="flex flex-1 flex-col overflow-y-auto">
-          {filteredList.map((c) => {
-            const seller = getSeller(c.sellerId);
-            const listing = getListing(c.listingId);
-            return (
-              <Link
-                key={c.id}
-                href={`/chats/${c.id}`}
-                className={cn(
-                  "flex items-center gap-3 border-l-2 px-4 py-3 hover:bg-surface",
-                  c.id === activeId ? "border-accent bg-surface" : "border-transparent"
-                )}
-              >
-                <Avatar name={seller?.name ?? "?"} size={40} />
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center justify-between">
-                    <p className="truncate text-[15px]">{seller?.name}</p>
-                    <span className="label-mono shrink-0 text-[10px] text-text-faint">{c.updatedAt}</span>
-                  </div>
-                  <p className="truncate text-sm text-text-tertiary">{c.lastMessagePreview || listing?.title}</p>
-                </div>
-                {c.unreadCount > 0 && (
-                  <span className="label-mono flex h-5 min-w-5 shrink-0 items-center justify-center rounded-full bg-accent px-1.5 text-[10px] text-white">
-                    {c.unreadCount}
+          {filteredList.map((c) => (
+            <Link
+              key={c.id}
+              href={`/chats/${c.id}`}
+              className={cn(
+                "flex items-center gap-3 border-l-2 px-4 py-3 hover:bg-surface",
+                c.id === activeId ? "border-accent bg-surface" : "border-transparent"
+              )}
+            >
+              <Avatar name={c.counterpartName} size={40} />
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center justify-between">
+                  <p className="truncate text-[15px]">{c.counterpartName}</p>
+                  <span className="label-mono shrink-0 text-[10px] text-text-faint">
+                    {new Date(c.updatedAt).toLocaleDateString()}
                   </span>
-                )}
-              </Link>
-            );
-          })}
+                </div>
+                <p className="truncate text-sm text-text-tertiary">{c.lastMessagePreview || c.listingTitle}</p>
+              </div>
+              {c.unreadCount > 0 && (
+                <span className="label-mono flex h-5 min-w-5 shrink-0 items-center justify-center rounded-full bg-accent px-1.5 text-[10px] text-white">
+                  {c.unreadCount}
+                </span>
+              )}
+            </Link>
+          ))}
         </div>
       </div>
 
@@ -105,10 +130,9 @@ export function ChatsView({ activeId }: { activeId?: string }) {
               <button onClick={() => router.push("/chats")} className="text-text-secondary lg:hidden" aria-label="Back">
                 <ChevronLeft size={20} />
               </button>
-              <Avatar name={getSeller(active.sellerId)?.name ?? "?"} size={36} />
+              <Avatar name={active.counterpartName} size={36} />
               <div>
-                <p className="text-[15px]">{getSeller(active.sellerId)?.name}</p>
-                {active.online && <p className="label-mono text-[10px] text-accent-text">ONLINE</p>}
+                <p className="text-[15px]">{active.counterpartName}</p>
               </div>
             </header>
 
@@ -118,9 +142,9 @@ export function ChatsView({ activeId }: { activeId?: string }) {
             >
               <div className="img-placeholder h-10 w-10 shrink-0 rounded-xl" />
               <div className="min-w-0 flex-1">
-                <p className="truncate text-sm">{getListing(active.listingId)?.title}</p>
+                <p className="truncate text-sm">{active.listingTitle}</p>
               </div>
-              <p className="shrink-0 text-sm text-accent-text">₹{getListing(active.listingId)?.price}</p>
+              <p className="shrink-0 text-sm text-accent-text">₹{active.listingPrice}</p>
             </Link>
 
             <div className="flex flex-1 flex-col gap-3 overflow-y-auto px-4 py-4">
@@ -133,16 +157,16 @@ export function ChatsView({ activeId }: { activeId?: string }) {
                     <div className="w-56 rounded-[20px] bg-accent-tile p-3 shadow-soft">
                       <p className="label-mono text-[10px] text-text-label">OFFER</p>
                       <p className="my-1 text-xl font-medium text-accent">₹{m.offerAmount}</p>
-                      {m.offerStatus === "pending" && m.from === "them" ? (
+                      {m.offerStatus === "PENDING" && m.from === "them" ? (
                         <div className="flex gap-2">
                           <button
-                            onClick={() => respondToOffer(active.id, m.id, "accepted")}
+                            onClick={() => respondToOffer(m.id, "ACCEPTED")}
                             className="h-8 flex-1 rounded-full bg-accent text-xs text-white shadow-accent"
                           >
                             Accept
                           </button>
                           <button
-                            onClick={() => respondToOffer(active.id, m.id, "declined")}
+                            onClick={() => respondToOffer(m.id, "DECLINED")}
                             className="h-8 flex-1 rounded-full border border-border-strong bg-white text-xs"
                           >
                             Decline
@@ -150,7 +174,7 @@ export function ChatsView({ activeId }: { activeId?: string }) {
                         </div>
                       ) : (
                         <p className="label-mono text-[10px] text-text-label">
-                          {m.offerStatus === "pending" ? "AWAITING RESPONSE" : m.offerStatus?.toUpperCase()}
+                          {m.offerStatus === "PENDING" ? "AWAITING RESPONSE" : m.offerStatus?.toUpperCase()}
                         </p>
                       )}
                     </div>
@@ -166,7 +190,9 @@ export function ChatsView({ activeId }: { activeId?: string }) {
                       )}
                     >
                       {m.text}
-                      <span className="label-mono ml-2 text-[9px] opacity-60">{m.sentAt}</span>
+                      <span className="label-mono ml-2 text-[9px] opacity-60">
+                        {new Date(m.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                      </span>
                     </div>
                   </div>
                 )
@@ -196,8 +222,8 @@ export function ChatsView({ activeId }: { activeId?: string }) {
         <div className="hidden flex-col gap-4 border-l border-border-hairline p-4 lg:flex">
           <ImagePlaceholder label="product shot" className="aspect-square w-full" />
           <div>
-            <p className="text-[15px]">{getListing(active.listingId)?.title}</p>
-            <p className="mt-1 text-lg text-accent-text">₹{getListing(active.listingId)?.price}</p>
+            <p className="text-[15px]">{active.listingTitle}</p>
+            <p className="mt-1 text-lg text-accent-text">₹{active.listingPrice}</p>
           </div>
           <button onClick={() => router.push(`/listing/${active.listingId}`)} className="h-10 rounded-full bg-accent text-[15px] text-white shadow-accent hover:bg-accent-hover">
             Buy now

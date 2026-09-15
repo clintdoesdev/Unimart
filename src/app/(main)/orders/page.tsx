@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { Package } from "lucide-react";
 import { AuthGate } from "@/components/AuthGate";
@@ -8,21 +8,28 @@ import { MobileHeader } from "@/components/nav/MobileHeader";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { Badge } from "@/components/ui/misc";
 import { cn } from "@/lib/cn";
-import { useOrdersStore } from "@/store/orders";
-import type { Order } from "@/lib/types";
+import { apiGet } from "@/lib/api";
+import type { OrderStatus, OrderSummary } from "@/lib/types";
 
-const STATUS_LABEL: Record<Order["status"], string> = {
-  paid: "PAID",
-  dropped: "DROPPED AT LOCKER",
-  "ready-for-pickup": "READY FOR PICKUP",
-  completed: "COMPLETED",
-  cancelled: "CANCELLED",
+const STATUS_LABEL: Record<OrderStatus, string> = {
+  PAID: "PAID",
+  DROPPED: "DROPPED AT LOCKER",
+  READY_FOR_PICKUP: "READY FOR PICKUP",
+  COMPLETED: "COMPLETED",
+  CANCELLED: "CANCELLED",
 };
 
 function OrdersContent() {
   const [tab, setTab] = useState<"buying" | "selling">("buying");
-  const allOrders = useOrdersStore((s) => s.orders);
-  const orders = allOrders.filter((o) => o.role === tab);
+  const [orders, setOrders] = useState<OrderSummary[] | null>(null);
+  const requestRef = useRef(0);
+
+  useEffect(() => {
+    const requestId = ++requestRef.current;
+    apiGet<{ orders: OrderSummary[] }>(`/api/orders?role=${tab}`).then((r) => {
+      if (requestRef.current === requestId) setOrders(r.orders);
+    });
+  }, [tab]);
 
   return (
     <div className="flex flex-1 flex-col">
@@ -46,7 +53,9 @@ function OrdersContent() {
       </div>
 
       <div className="flex flex-col gap-3 px-5 py-5 lg:mx-auto lg:w-full lg:max-w-2xl">
-        {orders.length === 0 ? (
+        {orders === null ? (
+          <p className="py-10 text-center text-sm text-text-tertiary">Loading...</p>
+        ) : orders.length === 0 ? (
           <EmptyState
             icon={Package}
             title="No orders yet"
@@ -58,8 +67,8 @@ function OrdersContent() {
           orders.map((order) => (
             <div key={order.id} className="rounded-[28px] bg-card shadow-soft p-4">
               <div className="flex items-center justify-between">
-                <p className="label-mono text-[11px] text-text-label">{order.id}</p>
-                <Badge tone={order.status === "completed" ? "muted" : "accent"}>
+                <p className="label-mono text-[11px] text-text-label">{order.orderNumber}</p>
+                <Badge tone={order.status === "COMPLETED" ? "muted" : "accent"}>
                   {STATUS_LABEL[order.status]}
                 </Badge>
               </div>
@@ -67,18 +76,20 @@ function OrdersContent() {
                 <div className="img-placeholder h-12 w-12 shrink-0 rounded-xl" />
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-[15px]">{order.items[0]?.title}</p>
-                  <p className="label-mono text-[10px] text-text-label">₹{order.total} · {order.createdAt}</p>
+                  <p className="label-mono text-[10px] text-text-label">
+                    ₹{order.total} · {new Date(order.createdAt).toLocaleDateString()}
+                  </p>
                 </div>
               </div>
               <div className="mt-3">
-                {order.status === "ready-for-pickup" || order.status === "paid" ? (
+                {order.status === "READY_FOR_PICKUP" || order.status === "PAID" ? (
                   <Link
                     href={`/orders/${order.id}`}
                     className="label-mono inline-flex h-9 items-center rounded-full border border-border-strong px-3.5 text-[11px]"
                   >
                     SHOW PICKUP CODE
                   </Link>
-                ) : order.status === "completed" && !order.reviewed && tab === "buying" ? (
+                ) : order.status === "COMPLETED" && !order.reviewed && tab === "buying" ? (
                   <Link
                     href={`/rate/${order.id}`}
                     className="label-mono inline-flex h-9 items-center rounded-full bg-accent px-3.5 text-[11px] text-white"

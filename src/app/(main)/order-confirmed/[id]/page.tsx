@@ -1,17 +1,35 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useParams, notFound } from "next/navigation";
+import { useParams } from "next/navigation";
 import { Check } from "lucide-react";
 import { AuthGate } from "@/components/AuthGate";
 import { DashedPanel } from "@/components/ui/misc";
-import { useOrdersStore } from "@/store/orders";
+import { apiGet } from "@/lib/api";
+import type { OrderDetail } from "@/lib/types";
 
 function OrderConfirmedContent() {
   const params = useParams<{ id: string }>();
-  const order = useOrdersStore((s) => s.getOrder(params.id));
+  const [order, setOrder] = useState<OrderDetail | null | undefined>(undefined);
 
-  if (!order) notFound();
+  useEffect(() => {
+    apiGet<{ order: OrderDetail }>(`/api/orders/${params.id}`)
+      .then((r) => setOrder(r.order))
+      .catch(() => setOrder(null));
+  }, [params.id]);
+
+  if (order === undefined) {
+    return <div className="flex flex-1 items-center justify-center text-text-tertiary">Loading...</div>;
+  }
+  if (order === null) {
+    return (
+      <div className="flex flex-1 flex-col items-center justify-center gap-3 px-8 text-center">
+        <p className="text-lg">Order not found</p>
+        <Link href="/home" className="text-accent">Back to home</Link>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-1 flex-col items-center justify-center gap-6 px-8 py-16 text-center lg:mx-auto lg:max-w-sm">
@@ -29,7 +47,7 @@ function OrderConfirmedContent() {
         <p className="label-mono text-[11px] text-text-label">PICKUP CODE</p>
         <p className="my-2 mono-code text-4xl tracking-[0.2em] text-accent-text">{order.pickupCode}</p>
         <div className="mt-3 flex justify-between border-t border-border-hairline pt-3 text-sm text-text-secondary">
-          <span>{order.id}</span>
+          <span>{order.orderNumber}</span>
           <span>₹{order.total}</span>
         </div>
       </DashedPanel>

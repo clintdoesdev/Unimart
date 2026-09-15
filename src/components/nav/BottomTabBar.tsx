@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Home, LayoutGrid, Plus, MessageCircle, User } from "lucide-react";
 import { cn } from "@/lib/cn";
-import { useChatStore } from "@/store/chat";
+import { useBadgeStore } from "@/store/badges";
 
 const TABS = [
   { href: "/home", label: "Home", icon: Home },
@@ -16,7 +16,7 @@ const TABS = [
 
 export function BottomTabBar() {
   const pathname = usePathname();
-  const unread = useChatStore((s) => s.totalUnread());
+  const unread = useBadgeStore((s) => s.unreadChats);
 
   return (
     <nav className="fixed inset-x-0 bottom-0 z-40 flex h-16 border-t border-border-hairline bg-white/95 shadow-elevated backdrop-blur lg:hidden">

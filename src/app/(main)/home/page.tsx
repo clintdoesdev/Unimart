@@ -1,14 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Bell, Heart, Search } from "lucide-react";
 import { ImagePlaceholder } from "@/components/ui/ImagePlaceholder";
 import { Chip } from "@/components/ui/Chip";
 import { ProductCard } from "@/components/ProductCard";
-import { CATEGORIES, LISTINGS } from "@/lib/mock-data";
 import { useSessionStore } from "@/store/session";
-import { useNotificationsStore } from "@/store/notifications";
+import { useBadgeStore } from "@/store/badges";
+import { apiGet } from "@/lib/api";
+import type { Category, Listing } from "@/lib/types";
 import { cn } from "@/lib/cn";
 
 const FILTERS = [
@@ -23,29 +24,36 @@ type FilterId = (typeof FILTERS)[number]["id"];
 export default function HomePage() {
   const profile = useSessionStore((s) => s.profile);
   const interests = useSessionStore((s) => s.interests);
-  const unreadNotifs = useNotificationsStore((s) => s.unreadCount());
+  const unreadNotifs = useBadgeStore((s) => s.unreadNotifications);
   const [activeFilter, setActiveFilter] = useState<FilterId>("for-you");
-  const [campus, setCampus] = useState(profile?.campus ?? "North Campus");
+  const campus = profile?.campus ?? "North Campus";
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [listings, setListings] = useState<Listing[] | null>(null);
+  const requestRef = useRef(0);
 
-  const listings = useMemo(() => {
-    const list = [...LISTINGS];
-    switch (activeFilter) {
-      case "free":
-        return list.filter((l) => l.free);
-      case "new":
-        return list.slice().reverse();
-      case "nearby":
-        return list.sort((a, b) => a.distanceMeters - b.distanceMeters);
-      case "for-you":
-      default:
-        if (interests.length === 0) return list;
-        return list.sort((a, b) => {
-          const aMatch = interests.includes(a.category) ? 0 : 1;
-          const bMatch = interests.includes(b.category) ? 0 : 1;
-          return aMatch - bMatch;
-        });
-    }
-  }, [activeFilter, interests]);
+  useEffect(() => {
+    apiGet<{ categories: Category[] }>("/api/categories").then((r) => setCategories(r.categories));
+  }, []);
+
+  useEffect(() => {
+    const params = new URLSearchParams({ pageSize: "24" });
+    if (activeFilter === "free") params.set("free", "true");
+    if (activeFilter === "nearby") params.set("sort", "nearby");
+    const requestId = ++requestRef.current;
+    apiGet<{ listings: Listing[] }>(`/api/listings?${params}`).then((r) => {
+      if (requestRef.current === requestId) setListings(r.listings);
+    });
+  }, [activeFilter]);
+
+  const sortedListings = useMemo(() => {
+    const base = listings ?? [];
+    if (activeFilter !== "for-you" || interests.length === 0) return base;
+    return [...base].sort((a, b) => {
+      const aMatch = interests.includes(a.category) ? 0 : 1;
+      const bMatch = interests.includes(b.category) ? 0 : 1;
+      return aMatch - bMatch;
+    });
+  }, [listings, activeFilter, interests]);
 
   return (
     <div className="flex flex-1 flex-col lg:grid lg:grid-cols-[190px_1fr] lg:items-start lg:gap-8 lg:px-6 lg:py-6">
@@ -54,8 +62,7 @@ export default function HomePage() {
         <div>
           <p className="label-mono mb-1.5 text-[11px] text-text-label">Campus</p>
           <select
-            value={campus}
-            onChange={(e) => setCampus(e.target.value)}
+            disabled
             className="h-10 w-full rounded-full border border-border-input bg-surface px-3 text-sm outline-none focus:border-accent"
           >
             <option>{campus}</option>
@@ -64,7 +71,7 @@ export default function HomePage() {
         <div>
           <p className="label-mono mb-2 text-[11px] text-text-label">Categories</p>
           <nav className="flex flex-col gap-0.5">
-            {CATEGORIES.map((c) => (
+            {categories.map((c) => (
               <Link
                 key={c.id}
                 href={`/browse?category=${c.id}`}
@@ -136,7 +143,7 @@ export default function HomePage() {
               <option>SORT: PRICE LOW-HIGH</option>
               <option>SORT: PRICE HIGH-LOW</option>
             </select>
-            <Link href="/search" className="label-mono text-[11px] text-accent-text">
+            <Link href="/search" className="label-mono text-[11px] text-accent">
               SEE ALL
             </Link>
           </div>
@@ -148,7 +155,10 @@ export default function HomePage() {
             "lg:grid-cols-4 lg:gap-5 lg:px-0"
           )}
         >
-          {listings.map((listing) => (
+          {listings !== null && sortedListings.length === 0 && (
+            <p className="col-span-full py-10 text-center text-sm text-text-tertiary">No listings yet — be the first to sell something!</p>
+          )}
+          {sortedListings.map((listing) => (
             <ProductCard key={listing.id} listing={listing} />
           ))}
         </div>

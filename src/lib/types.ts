@@ -1,26 +1,51 @@
-export type Condition = "new" | "like-new" | "good" | "fair";
-
-export type HandoverMethod = "locker" | "meet" | "deliver";
-
-export type CategoryId =
-  | "textbooks"
-  | "lab-kits"
-  | "electronics"
-  | "hostel"
-  | "bikes"
-  | "merch"
-  | "tickets"
-  | "tutoring"
-  | "furniture";
+export type Condition = "NEW" | "LIKE_NEW" | "GOOD" | "FAIR";
+export type HandoverMethod = "LOCKER" | "MEET" | "DELIVER";
+export type ListingStatus = "LIVE" | "DRAFT" | "SOLD";
+export type OrderStatus = "PAID" | "DROPPED" | "READY_FOR_PICKUP" | "COMPLETED" | "CANCELLED";
+export type OfferStatus = "PENDING" | "ACCEPTED" | "DECLINED";
+export type UserRole = "STUDENT" | "VENDOR" | "ADMIN";
+export type VendorStatus = "PENDING" | "APPROVED" | "REJECTED" | "SUSPENDED";
 
 export interface Category {
-  id: CategoryId;
+  id: string;
   name: string;
   icon: string;
   listingCount: number;
 }
 
-export interface Seller {
+export interface SellerSummary {
+  id: string;
+  name: string;
+  course: string;
+  year: number;
+  campus: string;
+  isVendor: boolean;
+  vendor: { businessName: string; category: string; verified: true } | null;
+}
+
+export interface Listing {
+  id: string;
+  title: string;
+  price: number;
+  free: boolean;
+  category: string;
+  categoryName: string;
+  department: string;
+  condition: Condition;
+  description: string;
+  photoCount: number;
+  distanceMeters: number;
+  location: string;
+  status: ListingStatus;
+  views: number;
+  saves: number;
+  handover: HandoverMethod[];
+  postedAt: string;
+  seller: SellerSummary;
+  saved?: boolean;
+}
+
+export interface SellerProfile {
   id: string;
   name: string;
   course: string;
@@ -30,27 +55,8 @@ export interface Seller {
   salesCount: number;
   reviewCount: number;
   verified: boolean;
-  joined: string;
-}
-
-export interface Listing {
-  id: string;
-  title: string;
-  price: number;
-  category: CategoryId;
-  department: string;
-  condition: Condition;
-  description: string;
-  photos: number;
-  sellerId: string;
-  distanceMeters: number;
-  location: string;
-  postedAt: string;
-  status: "live" | "draft" | "sold";
-  saves: number;
-  views: number;
-  free: boolean;
-  handover: HandoverMethod[];
+  isVendor: boolean;
+  vendor: { businessName: string; category: string; description: string } | null;
 }
 
 export interface Review {
@@ -58,36 +64,42 @@ export interface Review {
   authorName: string;
   rating: number;
   tags: string[];
-  note?: string;
+  note?: string | null;
   createdAt: string;
 }
 
-export type OrderStatus =
-  | "paid"
-  | "dropped"
-  | "ready-for-pickup"
-  | "completed"
-  | "cancelled";
-
-export interface TimelineStep {
-  label: string;
-  timestamp?: string;
-  done: boolean;
-}
-
-export interface OrderItem {
+export interface CartLine {
   listingId: string;
   title: string;
   price: number;
   qty: number;
 }
 
-export interface Order {
-  id: string;
-  role: "buying" | "selling";
+export interface CartGroup {
   sellerId: string;
-  buyerName: string;
-  items: OrderItem[];
+  seller: SellerSummary;
+  lines: CartLine[];
+}
+
+export interface OrderItemView {
+  listingId: string | null;
+  title: string;
+  price: number;
+  qty: number;
+}
+
+export interface TimelineStep {
+  label: string;
+  timestamp: string | null;
+  done: boolean;
+}
+
+export interface OrderSummary {
+  id: string;
+  orderNumber: string;
+  role: "buying" | "selling";
+  counterpartName: string;
+  items: OrderItemView[];
   subtotal: number;
   handoverCost: number;
   discount: number;
@@ -95,28 +107,43 @@ export interface Order {
   handoverMethod: HandoverMethod;
   status: OrderStatus;
   pickupCode: string;
-  timeline: TimelineStep[];
-  createdAt: string;
   reviewed: boolean;
+  createdAt: string;
+}
+
+export interface OrderDetail extends OrderSummary {
+  sellerId: string;
+  timeline: TimelineStep[];
 }
 
 export interface ChatMessage {
   id: string;
   from: "me" | "them";
-  text?: string;
-  offerAmount?: number;
-  offerStatus?: "pending" | "accepted" | "declined";
-  sentAt: string;
+  text?: string | null;
+  offerAmount?: number | null;
+  offerStatus?: OfferStatus | null;
+  createdAt: string;
 }
 
-export interface Conversation {
+export interface ConversationSummary {
   id: string;
-  sellerId: string;
   listingId: string;
+  listingTitle: string;
+  listingPrice: number;
+  counterpartId: string;
+  counterpartName: string;
   lastMessagePreview: string;
   updatedAt: string;
   unreadCount: number;
-  online: boolean;
+}
+
+export interface ConversationDetail {
+  id: string;
+  listingId: string;
+  listingTitle: string;
+  listingPrice: number;
+  counterpartId: string;
+  counterpartName: string;
   messages: ChatMessage[];
 }
 
@@ -132,17 +159,29 @@ export interface WalletLedgerEntry {
   id: string;
   label: string;
   amount: number;
-  type: "credit" | "debit";
+  type: "CREDIT" | "DEBIT";
   createdAt: string;
 }
 
-export interface CartLine {
-  listingId: string;
-  qty: number;
+export interface Profile {
+  id: string;
+  email: string;
+  fullName: string;
+  campus: string;
+  course: string;
+  year: number;
+  role: UserRole;
+  interests: string[];
+  walletBalance: number;
+  emailVerifiedAt: string | null;
 }
 
-export interface CartGroup {
-  sellerId: string;
-  lines: CartLine[];
-  handoverMethod: HandoverMethod;
+export interface VendorInfo {
+  id: string;
+  businessName: string;
+  category: string;
+  description: string;
+  campus: string;
+  status: VendorStatus;
+  approvedAt: string | null;
 }
